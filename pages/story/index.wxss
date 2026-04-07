@@ -1,0 +1,144 @@
+/* 故事录入页 v2 - 对话气泡 · 沉浸式问卷 */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #F8F5FF;
+}
+
+/* ——— 进度条 ——— */
+.progress-bar {
+  height: 3px;
+  background: #EBE6F6;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #9B8EC4 0%, #8EC5FC 100%);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0 2px 2px 0;
+}
+
+/* ——— 聊天区域 ——— */
+.chat-area {
+  flex: 1;
+  padding: 28px 16px 136px;
+  padding-top: 24px;
+  overflow-y: auto;
+}
+
+.message {
+  display: flex;
+  margin-bottom: 24px;
+  align-items: flex-end;
+}
+.ai-message  { flex-direction: row; }
+.user-message { flex-direction: row-reverse; }
+
+/* AI 头像 */
+.avatar {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, #9B8EC4 0%, #8EC5FC 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin: 0 10px;
+  box-shadow: 0 4px 12px rgba(155,142,196,0.3);
+}
+.avatar-icon { font-size: 18px; }
+
+/* 气泡 */
+.bubble {
+  max-width: 72%;
+  padding: 13px 17px;
+  font-size: 15px;
+  line-height: 1.6;
+  position: relative;
+  word-break: break-all;
+}
+.bubble-ai {
+  background: #FFFFFF;
+  color: #2D2B55;
+  border-radius: 18px 18px 18px 4px;
+  box-shadow: 0 2px 12px rgba(155,142,196,0.12), 0 1px 3px rgba(0,0,0,0.04);
+}
+.bubble-user {
+  background: linear-gradient(135deg, #9B8EC4 0%, #8EC5FC 100%);
+  color: #FFFFFF;
+  border-radius: 18px 18px 4px 18px;
+  box-shadow: 0 4px 16px rgba(142,197,252,0.35);
+}
+
+/* ——— 输入区域 ——— */
+.input-area {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: #FFFFFF;
+  padding: 16px 16px 40px;
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 -4px 24px rgba(155,142,196,0.12);
+}
+
+/* 选择题 */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.option-btn {
+  background: #F4F0FD;
+  color: #3D3570;
+  font-size: 15px;
+  padding: 14px 20px;
+  border-radius: 14px;
+  border: 1.5px solid transparent;
+  text-align: left;
+  font-weight: 500;
+  transition: all 0.18s ease;
+  line-height: 1.4;
+}
+.option-btn:active {
+  background: linear-gradient(135deg, #9B8EC4 0%, #8EC5FC 100%);
+  color: #FFFFFF;
+  border-color: transparent;
+  transform: scale(0.98);
+}
+
+/* 文本输入 */
+.text-input {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+.input-field {
+  flex: 1;
+  background: #F4F0FD;
+  border: 1.5px solid #E6E0F8;
+  border-radius: 18px;
+  padding: 13px 16px;
+  font-size: 15px;
+  max-height: 100px;
+  min-height: 46px;
+  color: #2D2B55;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+.send-btn {
+  background: linear-gradient(135deg, #9B8EC4 0%, #8EC5FC 100%);
+  color: #FFFFFF;
+  font-size: 15px;
+  padding: 13px 22px;
+  border-radius: 22px;
+  border: none;
+  font-weight: 600;
+  box-shadow: 0 6px 18px rgba(142,197,252,0.38);
+  flex-shrink: 0;
+}
+.send-btn[disabled] {
+  opacity: 0.42;
+  box-shadow: none;
+}

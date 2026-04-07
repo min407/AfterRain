@@ -1,0 +1,217 @@
+/* 欢迎页 v2 - 简洁大气 · 暖紫风格 */
+.container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(165deg, #F3EEFF 0%, #EBE4FF 30%, #E4EDFF 65%, #EDF5FF 100%);
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* ——— 背景光晕 ——— */
+.bg-glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.bg-glow-1 {
+  width: 320px; height: 320px;
+  top: -100px; right: -90px;
+  background: radial-gradient(circle, rgba(184,169,232,0.28) 0%, transparent 68%);
+}
+.bg-glow-2 {
+  width: 260px; height: 260px;
+  bottom: 120px; left: -90px;
+  background: radial-gradient(circle, rgba(142,197,252,0.22) 0%, transparent 68%);
+}
+
+/* ——— 星光粒子 ——— */
+.stars-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.star {
+  position: absolute;
+  border-radius: 50%;
+  animation: twinkle 3s infinite ease-in-out;
+}
+.s1 { width: 6px; height: 6px; left: 9%;  top: 14%; background: #B8A9E8; animation-delay: 0s; }
+.s2 { width: 4px; height: 4px; left: 78%; top: 11%; background: #FFD700; animation-delay: 0.7s; }
+.s3 { width: 3px; height: 3px; left: 22%; top: 32%; background: #8EC5FC; animation-delay: 1.4s; }
+.s4 { width: 5px; height: 5px; left: 68%; top: 22%; background: #B8A9E8; animation-delay: 0.3s; }
+.s5 { width: 3px; height: 3px; left: 88%; top: 38%; background: #FFD700; animation-delay: 2.1s; }
+.s6 { width: 4px; height: 4px; left: 6%;  top: 55%; background: #8EC5FC; animation-delay: 1.0s; }
+.s7 { width: 3px; height: 3px; left: 50%; top: 8%;  background: #FFD700; animation-delay: 1.7s; }
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0; transform: scale(0.4); }
+  50%       { opacity: 1; transform: scale(1.2); }
+}
+
+/* ——— 主内容区 ——— */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ——— 玻璃瓶插画 ——— */
+.bottle-wrap {
+  position: relative;
+  width: 160px;
+  height: 230px;
+  margin-bottom: 46px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.bottle-glow {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 220px; height: 220px;
+  background: radial-gradient(circle, rgba(155,142,196,0.18) 0%, transparent 68%);
+  animation: pulse-glow 3s infinite ease-in-out;
+  border-radius: 50%;
+}
+@keyframes pulse-glow {
+  0%, 100% { transform: translate(-50%,-50%) scale(0.88); }
+  50%       { transform: translate(-50%,-50%) scale(1.1); }
+}
+.bottle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+.bottle-neck {
+  width: 46px; height: 30px;
+  background: linear-gradient(180deg,
+    rgba(255,255,255,0.95) 0%,
+    rgba(218,210,245,0.88) 100%);
+  border-radius: 8px 8px 0 0;
+  border: 1.5px solid rgba(155,142,196,0.22);
+  border-bottom: none;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 5px;
+}
+.bottle-cap {
+  width: 38px; height: 10px;
+  background: linear-gradient(90deg, #C4B5EA, #A8C8F8, #C4B5EA);
+  border-radius: 5px;
+}
+.bottle-body {
+  width: 124px; height: 168px;
+  background: linear-gradient(160deg,
+    rgba(255,255,255,0.88) 0%,
+    rgba(232,224,252,0.68) 38%,
+    rgba(220,234,255,0.72) 72%,
+    rgba(255,255,255,0.78) 100%);
+  border-radius: 24px 24px 52px 52px;
+  border: 1.5px solid rgba(155,142,196,0.2);
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    inset 0 0 28px rgba(255,255,255,0.55),
+    0 18px 48px rgba(155,142,196,0.22),
+    0 4px 12px rgba(155,142,196,0.1);
+}
+.bottle-shine {
+  position: absolute;
+  left: 13px; top: 18px;
+  width: 13px; height: 68%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.72) 0%, transparent 100%);
+  border-radius: 7px;
+}
+
+/* 瓶内星星 */
+.bottle-stars { position: absolute; inset: 0; }
+.bstar {
+  position: absolute;
+  animation: float-star 3s infinite ease-in-out;
+  text-shadow: 0 0 10px currentColor;
+}
+.b1 { font-size: 19px; color: #FFD700; left: 26%; top: 18%; animation-delay: 0s; }
+.b2 { font-size: 13px; color: #C4B8E8; left: 56%; top: 28%; animation-delay: 0.9s; }
+.b3 { font-size: 15px; color: #FFB6C1; left: 36%; top: 50%; animation-delay: 1.5s; }
+.b4 { font-size: 11px; color: #8EC5FC; left: 62%; top: 62%; animation-delay: 0.5s; }
+.b5 { font-size: 17px; color: #FFD700; left: 20%; top: 66%; animation-delay: 1.9s; }
+@keyframes float-star {
+  0%, 100% { transform: translateY(0) rotate(0deg);    opacity: 0.65; }
+  50%       { transform: translateY(-10px) rotate(18deg); opacity: 1; }
+}
+
+/* ——— 文字 ——— */
+.app-name {
+  font-size: 40px;
+  font-weight: 700;
+  color: #2D2B55;
+  letter-spacing: 6px;
+  margin-bottom: 14px;
+  text-align: center;
+  line-height: 1.1;
+}
+.app-sub {
+  font-size: 17px;
+  color: #7468A8;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+  font-weight: 500;
+  text-align: center;
+}
+.app-desc {
+  font-size: 13px;
+  color: #B4B0CE;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+/* ——— 底部按钮区 ——— */
+.bottom-area {
+  padding: 0 28px 58px;
+  position: relative;
+  z-index: 1;
+}
+.btn-start {
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(135deg, #8B6EC7 0%, #6A9CF5 100%);
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 14px 42px rgba(108,88,199,0.44);
+  border: none;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+.btn-start::after { border: none; }
+.btn-start:active {
+  transform: scale(0.97);
+  box-shadow: 0 6px 20px rgba(108,88,199,0.32);
+}
+.btn-start text {
+  font-size: 19px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 4px;
+}
+.start-hint {
+  text-align: center;
+  font-size: 12px;
+  color: #C2BDD6;
+  margin-top: 14px;
+  letter-spacing: 0.5px;
+}

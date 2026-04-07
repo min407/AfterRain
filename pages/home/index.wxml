@@ -1,0 +1,67 @@
+<view class="container">
+  <!-- 顶部状态栏 -->
+  <view class="header">
+    <view class="stats-row">
+      <view class="stat-item">
+        <view class="stat-num">{{day}}</view>
+        <view class="stat-label">当前天</view>
+      </view>
+      <view class="stat-sep"></view>
+      <view class="stat-item">
+        <view class="stat-num stat-target">21</view>
+        <view class="stat-label">目标天</view>
+      </view>
+      <view class="stat-sep"></view>
+      <view class="stat-item">
+        <view class="stat-num stat-streak">{{streak}}</view>
+        <view class="stat-label">连续打卡</view>
+      </view>
+    </view>
+    <view class="progress-wrap">
+      <view class="progress-track">
+        <view class="progress-fill" style="width: {{progress}}%;"></view>
+      </view>
+      <view class="progress-pct">{{progress}}%</view>
+    </view>
+  </view>
+
+  <!-- 玻璃瓶主视觉 -->
+  <view class="bottle-section">
+    <view class="bottle-outer">
+      <view class="bottle-glow-ring"></view>
+      <view class="bottle">
+        <view class="bottle-neck">
+          <view class="bottle-cap"></view>
+        </view>
+        <view class="bottle-body">
+          <view class="bottle-shine"></view>
+          <view class="stars-container">
+            <view
+              wx:for="{{stars}}"
+              wx:key="index"
+              class="star-item"
+              style="left: {{item.x}}%; top: {{item.y}}%; animation-delay: {{item.delay}}s;"
+            >
+              <text class="star-icon" style="color: {{item.color}}; font-size: {{item.size}}px;">★</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- AI 寄语 -->
+    <view class="quote-card">
+      <text class="quote-mark">"</text>
+      <text class="quote-text">{{quote}}</text>
+    </view>
+  </view>
+
+  <!-- 打卡按钮 -->
+  <view class="bottom-action">
+    <button class="checkin-btn" bindtap="goCheckin">
+      <text class="checkin-icon">✨</text>
+      <text class="checkin-text">今日打卡</text>
+    </button>
+    <view class="checkin-hint">30 秒，记录今天</view>
+  </view>
+</view>

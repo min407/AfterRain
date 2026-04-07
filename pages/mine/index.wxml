@@ -1,0 +1,113 @@
+<view class="container">
+  <!-- 用户头部 Banner -->
+  <view class="user-banner">
+    <view class="avatar-wrap">
+      <view class="avatar"><text>☀️</text></view>
+    </view>
+    <view class="user-meta">
+      <view class="user-name">我的档案</view>
+      <view class="user-sub">失恋晴天 · 陪你走出来</view>
+    </view>
+  </view>
+
+  <!-- 数据概览 -->
+  <view class="stats-strip">
+    <view class="strip-item">
+      <view class="strip-num">{{days}}</view>
+      <view class="strip-label">累计打卡</view>
+    </view>
+    <view class="strip-sep"></view>
+    <view class="strip-item">
+      <view class="strip-num">{{checkinCount}}</view>
+      <view class="strip-label">本月打卡</view>
+    </view>
+    <view class="strip-sep"></view>
+    <view class="strip-item">
+      <view class="strip-num strip-streak">{{streak}}</view>
+      <view class="strip-label">连续天数</view>
+    </view>
+  </view>
+
+  <!-- 故事档案 -->
+  <view class="section">
+    <view class="section-header">
+      <view class="section-title">故事档案</view>
+      <view class="section-action" bindtap="editStory">编辑 ›</view>
+    </view>
+    <view class="story-card" bindtap="editStory">
+      <view class="story-filled" wx:if="{{story}}">
+        <view class="story-tags">
+          <view class="stag stag-scene">{{story.scene}}</view>
+          <view class="stag stag-duration">{{story.duration}}</view>
+          <view class="stag stag-initiator">{{story.initiator}}</view>
+        </view>
+        <view class="story-text-block" wx:if="{{story.reason}}">
+          <view class="story-field-label">分手原因</view>
+          <view class="story-field-text">{{story.reason}}</view>
+        </view>
+        <view class="story-text-block" wx:if="{{story.hardest_moment}}">
+          <view class="story-field-label">最难熬的事</view>
+          <view class="story-field-text">{{story.hardest_moment}}</view>
+        </view>
+      </view>
+      <view class="story-empty" wx:else>
+        <view class="empty-icon-s">💌</view>
+        <view class="empty-text-s">还没有记录故事，点击去添加</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 打卡日历 -->
+  <view class="section">
+    <view class="section-header">
+      <view class="section-title">打卡日历</view>
+      <view class="cal-nav">
+        <view class="nav-btn" bindtap="prevMonth">‹</view>
+        <view class="cal-month">{{currentMonth}}</view>
+        <view class="nav-btn" bindtap="nextMonth">›</view>
+      </view>
+    </view>
+    <view class="cal-card">
+      <view class="cal-weekdays">
+        <text>日</text><text>一</text><text>二</text><text>三</text>
+        <text>四</text><text>五</text><text>六</text>
+      </view>
+      <view class="cal-days">
+        <view
+          wx:for="{{calendarDays}}"
+          wx:key="index"
+          class="cal-day {{item.checkin ? 'day-checked' : ''}} {{item.today ? 'day-today' : ''}} {{!item.day ? 'day-empty' : ''}}"
+        >
+          <view class="day-num">{{item.day}}</view>
+          <view class="day-star" wx:if="{{item.checkin}}">★</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 设置 -->
+  <view class="section">
+    <view class="section-header">
+      <view class="section-title">设置</view>
+    </view>
+    <view class="settings-card">
+      <view class="setting-row" bindtap="clearData">
+        <view class="setting-left">
+          <text class="setting-icon">🗑</text>
+          <text class="setting-text">清空所有数据</text>
+        </view>
+        <text class="setting-arrow">›</text>
+      </view>
+      <view class="row-divider"></view>
+      <view class="setting-row">
+        <view class="setting-left">
+          <text class="setting-icon">ℹ️</text>
+          <text class="setting-text">关于失恋晴天</text>
+        </view>
+        <text class="setting-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="footer">失恋晴天 · 分手而已，雨过天会晴</view>
+</view>

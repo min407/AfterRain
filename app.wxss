@@ -1,0 +1,59 @@
+/* 全局样式 v2 */
+page {
+  background: #F4F0FF;
+  color: #2D2B55;
+  font-size: 16px;
+  /* 微信小程序中 line-height 设置在 page 上可被继承 */
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ——— 通用主按钮 ——— */
+.btn-primary {
+  background: linear-gradient(135deg, #9B8EC4 0%, #7AB8FA 100%);
+  color: #FFFFFF;
+  border-radius: 28px;
+  padding: 15px 16px;
+  font-size: 17px;
+  font-weight: 700;
+  border: none;
+  box-shadow: 0 10px 28px rgba(142,197,252,0.38);
+  letter-spacing: 1px;
+}
+.btn-primary::after { border: none; }
+
+/* ——— 通用次要按钮 ——— */
+.btn-secondary {
+  background: #F0ECFF;
+  color: #7468A8;
+  border-radius: 28px;
+  padding: 14px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+}
+
+/* ——— 通用白色卡片 ——— */
+.card {
+  background: #FFFFFF;
+  border-radius: 18px;
+  box-shadow: 0 2px 10px rgba(155,142,196,0.1), 0 6px 20px rgba(155,142,196,0.06);
+}
+
+/* ——— 带左边框的区块标题 ——— */
+.section-title-accent {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2D2B55;
+  padding-left: 10px;
+  position: relative;
+}
+.section-title-accent::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 3px; height: 16px;
+  background: linear-gradient(180deg, #9B8EC4 0%, #8EC5FC 100%);
+  border-radius: 2px;
+}

@@ -1,0 +1,282 @@
+/* AI 对话页 v2 - 模式卡片 · 对话界面 */
+.container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #F8F5FF;
+  overflow: hidden;
+}
+
+/* ——— 快捷入口 ——— */
+.quick-entry {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 20px 40px;
+  overflow-y: auto;
+}
+.quick-header {
+  margin-bottom: 24px;
+}
+.quick-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2D2B55;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+.quick-sub {
+  font-size: 14px;
+  color: #B0B0CC;
+}
+
+/* 模式卡片 */
+.quick-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+}
+.quick-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 18px 18px 16px;
+  border-radius: 20px;
+  border: 1.5px solid transparent;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04), 0 6px 20px rgba(0,0,0,0.03);
+}
+.quick-card:active {
+  transform: scale(0.98);
+}
+.card-selected {
+  border-color: rgba(155,142,196,0.4) !important;
+  box-shadow: 0 4px 16px rgba(155,142,196,0.2), 0 8px 28px rgba(155,142,196,0.1) !important;
+}
+
+/* 三种模式各自的色调 */
+.card-calm {
+  background: linear-gradient(135deg, #FFF8F0 0%, #FFF0E8 100%);
+}
+.card-reflect {
+  background: linear-gradient(135deg, #F4F0FD 0%, #EDE6FF 100%);
+}
+.card-companionship {
+  background: linear-gradient(135deg, #FDF0F8 0%, #FAE6F5 100%);
+}
+
+.card-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+}
+.card-icon-wrap {
+  width: 50px; height: 50px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.icon-calm         { background: rgba(255,168,100,0.18); }
+.icon-reflect      { background: rgba(155,142,196,0.18); }
+.icon-companionship { background: rgba(220,130,180,0.18); }
+.card-icon { font-size: 24px; }
+
+.card-text { flex: 1; }
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2D2B55;
+  margin-bottom: 4px;
+  letter-spacing: 0.3px;
+}
+.card-desc {
+  font-size: 13px;
+  color: #A0A0BC;
+}
+.card-arrow {
+  font-size: 22px;
+  color: #C8C4D8;
+  padding-left: 6px;
+}
+
+/* 开始按钮 */
+.start-btn {
+  margin-top: 24px;
+  height: 58px;
+  background: linear-gradient(135deg, #9B8EC4 0%, #7AB8FA 100%);
+  border-radius: 29px;
+  color: #FFFFFF;
+  font-size: 18px;
+  font-weight: 700;
+  border: none;
+  box-shadow: 0 12px 32px rgba(142,197,252,0.4);
+  letter-spacing: 1px;
+}
+.start-btn::after { border: none; }
+.start-btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 5px 14px rgba(142,197,252,0.3);
+}
+
+/* ——— 对话界面 ——— */
+.chat-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #FFFFFF;
+  overflow: hidden;
+}
+
+/* 模式标签栏 */
+.mode-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: #FAFAFA;
+  border-bottom: 1px solid #F0EDF8;
+}
+.mode-tag-wrap {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.mode-dot {
+  width: 8px; height: 8px;
+  background: linear-gradient(135deg, #9B8EC4, #8EC5FC);
+  border-radius: 50%;
+  display: block;
+}
+.mode-tag {
+  font-size: 14px;
+  color: #7468A8;
+  font-weight: 600;
+}
+.close-btn {
+  width: 32px; height: 32px;
+  background: #F4F0FD;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #9B8EC4;
+}
+
+/* 消息列表 */
+.messages {
+  flex: 1;
+  padding: 20px 16px 12px;
+  background: #FDFCFF;
+}
+.message {
+  display: flex;
+  margin-bottom: 18px;
+  align-items: flex-end;
+}
+.message.ai   { flex-direction: row; }
+.message.user { flex-direction: row-reverse; }
+
+/* AI 头像 */
+.avatar {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, #9B8EC4 0%, #8EC5FC 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+  margin: 0 8px;
+  box-shadow: 0 3px 10px rgba(155,142,196,0.28);
+}
+
+/* 气泡 */
+.bubble {
+  max-width: 72%;
+  padding: 13px 17px;
+  font-size: 15px;
+  line-height: 1.65;
+  word-break: break-all;
+}
+.bubble-ai {
+  background: #FFFFFF;
+  color: #2D2B55;
+  border-radius: 18px 18px 18px 4px;
+  box-shadow: 0 2px 10px rgba(155,142,196,0.1), 0 1px 3px rgba(0,0,0,0.04);
+}
+.bubble-user {
+  background: linear-gradient(135deg, #9B8EC4 0%, #8EC5FC 100%);
+  color: #FFFFFF;
+  border-radius: 18px 18px 4px 18px;
+  box-shadow: 0 4px 16px rgba(142,197,252,0.35);
+}
+
+/* 打字动画 */
+.typing {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 16px 20px;
+  min-width: 64px;
+}
+.dot {
+  width: 7px; height: 7px;
+  background: #C8C0E4;
+  border-radius: 50%;
+  animation: bounce-dot 1.4s infinite ease-in-out;
+}
+.dot:nth-child(1) { animation-delay: 0s; }
+.dot:nth-child(2) { animation-delay: 0.22s; }
+.dot:nth-child(3) { animation-delay: 0.44s; }
+@keyframes bounce-dot {
+  0%, 80%, 100% { transform: translateY(0);    opacity: 0.4; }
+  40%            { transform: translateY(-7px); opacity: 1; }
+}
+
+/* ——— 输入区域 ——— */
+.input-area {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 12px 16px 38px;
+  background: #FFFFFF;
+  border-top: 1px solid #F2EEF8;
+}
+.input-field {
+  flex: 1;
+  background: #F4F0FD;
+  border: 1.5px solid #E8E2F4;
+  border-radius: 22px;
+  padding: 12px 18px;
+  font-size: 15px;
+  color: #2D2B55;
+  line-height: 1.5;
+  min-height: 46px;
+}
+.send-btn {
+  width: 46px; height: 46px;
+  background: linear-gradient(135deg, #9B8EC4 0%, #8EC5FC 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(142,197,252,0.4);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+.send-btn:active { transform: scale(0.92); }
+.send-disabled {
+  opacity: 0.4;
+  box-shadow: none;
+}
+.send-icon {
+  font-size: 20px;
+  color: #FFFFFF;
+  font-weight: 700;
+  line-height: 1;
+}

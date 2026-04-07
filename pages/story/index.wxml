@@ -1,0 +1,58 @@
+<view class="container">
+  <!-- 进度指示器 -->
+  <view class="progress-bar">
+    <view class="progress-fill" style="width: {{progress}}%"></view>
+  </view>
+
+  <!-- 对话内容区域 -->
+  <scroll-view class="chat-area" scroll-y="true" enhanced="{{true}}" show-scrollbar="{{false}}">
+    <!-- 已回答的问题 -->
+    <block wx:for="{{history}}" wx:key="index">
+      <view class="message ai-message">
+        <view class="avatar">
+          <view class="avatar-icon">☀️</view>
+        </view>
+        <view class="bubble bubble-ai">{{item.question}}</view>
+      </view>
+      <view class="message user-message">
+        <view class="bubble bubble-user">{{item.answer}}</view>
+      </view>
+    </block>
+
+    <!-- 当前问题 -->
+    <view class="message ai-message" wx:if="{{currentQ}}">
+      <view class="avatar">
+        <view class="avatar-icon">☀️</view>
+      </view>
+      <view class="bubble bubble-ai">{{currentQ}}</view>
+    </view>
+  </scroll-view>
+
+  <!-- 输入区域 -->
+  <view class="input-area">
+    <!-- 选择题选项 -->
+    <view class="options" wx:if="{{currentType === 'choice'}}">
+      <button
+        wx:for="{{currentOptions}}"
+        wx:key="index"
+        class="option-btn"
+        data-value="{{item}}"
+        bindtap="selectOption"
+      >{{item}}</button>
+    </view>
+
+    <!-- 开放输入 -->
+    <view class="text-input" wx:if="{{currentType === 'text'}}">
+      <textarea
+        class="input-field"
+        placeholder="{{placeholder}}"
+        value="{{textAnswer}}"
+        bindinput="onTextInput"
+        auto-height="{{true}}"
+        maxlength="{{500}}"
+        focus="{{true}}"
+      ></textarea>
+      <button class="send-btn" bindtap="submitText" disabled="{{!textAnswer}}">发送</button>
+    </view>
+  </view>
+</view>

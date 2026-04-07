@@ -1,0 +1,52 @@
+<view class="container">
+  <!-- 背景光晕 -->
+  <view class="bg-glow bg-glow-1"></view>
+  <view class="bg-glow bg-glow-2"></view>
+
+  <!-- 飘落星星 -->
+  <view class="stars-bg">
+    <view class="star s1"></view>
+    <view class="star s2"></view>
+    <view class="star s3"></view>
+    <view class="star s4"></view>
+    <view class="star s5"></view>
+    <view class="star s6"></view>
+    <view class="star s7"></view>
+  </view>
+
+  <!-- 主内容 -->
+  <view class="main">
+    <!-- 玻璃瓶插画 -->
+    <view class="bottle-wrap">
+      <view class="bottle-glow"></view>
+      <view class="bottle">
+        <view class="bottle-neck">
+          <view class="bottle-cap"></view>
+        </view>
+        <view class="bottle-body">
+          <view class="bottle-shine"></view>
+          <view class="bottle-stars">
+            <text class="bstar b1">★</text>
+            <text class="bstar b2">✦</text>
+            <text class="bstar b3">★</text>
+            <text class="bstar b4">✦</text>
+            <text class="bstar b5">★</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 文字 -->
+    <view class="app-name">失恋晴天</view>
+    <view class="app-sub">分手而已，雨过天会晴</view>
+    <view class="app-desc">记录你的故事，陪你走出来</view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-area">
+    <button class="btn-start" bindtap="goHome">
+      <text>进 入</text>
+    </button>
+    <view class="start-hint">想和 AI 深聊时，再讲讲你们的故事</view>
+  </view>
+</view>

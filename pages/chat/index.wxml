@@ -1,0 +1,110 @@
+<view class="container">
+  <!-- 快捷入口 -->
+  <view class="quick-entry" wx:if="{{!isChatting}}">
+    <view class="quick-header">
+      <view class="quick-title">今天想聊些什么？</view>
+      <view class="quick-sub">选择一个话题，开始聊天</view>
+    </view>
+    <view class="quick-cards">
+      <view class="quick-card card-calm {{selectedMode === 'calm' ? 'card-selected' : ''}}" bindtap="useMode" data-mode="calm">
+        <view class="card-left">
+          <view class="card-icon-wrap icon-calm">
+            <text class="card-icon">🌙</text>
+          </view>
+          <view class="card-text">
+            <view class="card-title">我今天很想联系TA</view>
+            <view class="card-desc">清醒模式 · 帮你保持理性</view>
+          </view>
+        </view>
+        <view class="card-arrow">›</view>
+      </view>
+
+      <view class="quick-card card-reflect {{selectedMode === 'reflect' ? 'card-selected' : ''}}" bindtap="useMode" data-mode="reflect">
+        <view class="card-left">
+          <view class="card-icon-wrap icon-reflect">
+            <text class="card-icon">🔍</text>
+          </view>
+          <view class="card-text">
+            <view class="card-title">帮我分析这段关系</view>
+            <view class="card-desc">复盘模式 · 梳理关系模式</view>
+          </view>
+        </view>
+        <view class="card-arrow">›</view>
+      </view>
+
+      <view class="quick-card card-companionship {{selectedMode === 'companionship' ? 'card-selected' : ''}}" bindtap="useMode" data-mode="companionship">
+        <view class="card-left">
+          <view class="card-icon-wrap icon-companionship">
+            <text class="card-icon">💜</text>
+          </view>
+          <view class="card-text">
+            <view class="card-title">我只是想说说话</view>
+            <view class="card-desc">陪伴模式 · 温柔倾听你</view>
+          </view>
+        </view>
+        <view class="card-arrow">›</view>
+      </view>
+    </view>
+
+    <!-- 开始按钮 -->
+    <button class="start-btn" bindtap="startChat" wx:if="{{selectedMode}}">开始聊天</button>
+  </view>
+
+  <!-- 对话区域 -->
+  <view class="chat-wrap" wx:if="{{isChatting}}">
+    <!-- 顶部模式栏 -->
+    <view class="mode-bar">
+      <view class="mode-tag-wrap">
+        <text class="mode-dot"></text>
+        <text class="mode-tag">{{modeText}}</text>
+      </view>
+      <view class="close-btn" bindtap="closeChat">✕</view>
+    </view>
+
+    <!-- 消息列表 -->
+    <scroll-view
+      class="messages"
+      scroll-y
+      enhanced="{{true}}"
+      show-scrollbar="{{false}}"
+      scroll-into-view="{{scrollIntoView}}"
+    >
+      <block wx:for="{{messages}}" wx:key="index">
+        <view class="message {{item.from}}" id="msg-{{index}}">
+          <view class="avatar" wx:if="{{item.from === 'ai'}}">
+            <text>☀️</text>
+          </view>
+          <view class="bubble bubble-{{item.from}}">{{item.text}}</view>
+        </view>
+      </block>
+
+      <!-- 加载中 typing 动画 -->
+      <view class="message ai typing-wrap" wx:if="{{isLoading}}">
+        <view class="avatar"><text>☀️</text></view>
+        <view class="bubble bubble-ai typing">
+          <view class="dot"></view>
+          <view class="dot"></view>
+          <view class="dot"></view>
+        </view>
+      </view>
+
+      <view id="bottom" style="height: 1px;"></view>
+    </scroll-view>
+
+    <!-- 输入框 -->
+    <view class="input-area">
+      <input
+        class="input-field"
+        placeholder="输入你的想法..."
+        value="{{input}}"
+        bindinput="onInput"
+        confirm-type="send"
+        bindconfirm="send"
+        disabled="{{isLoading}}"
+      />
+      <view class="send-btn {{input ? '' : 'send-disabled'}}" bindtap="send">
+        <text class="send-icon">↑</text>
+      </view>
+    </view>
+  </view>
+</view>

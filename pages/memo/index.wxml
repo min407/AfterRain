@@ -1,0 +1,106 @@
+<view class="container">
+  <!-- ===== 打卡模式 ===== -->
+  <view class="checkin-mode" wx:if="{{mode === 'checkin'}}">
+    <view class="checkin-hero">
+      <view class="checkin-emoji">✨</view>
+      <view class="checkin-title">今日打卡</view>
+      <view class="checkin-day">DAY {{day}} / 21</view>
+    </view>
+
+    <view class="checkin-card">
+      <!-- 问题1：是否联系TA -->
+      <view class="q-block">
+        <view class="q-label">今天联系 TA 了吗？</view>
+        <view class="q-options">
+          <view
+            class="q-opt {{contacted === false ? 'opt-selected' : ''}}"
+            bindtap="setContacted"
+            data-value="{{false}}"
+          >
+            <text class="opt-icon">🚫</text>
+            <text class="opt-text">没有</text>
+          </view>
+          <view
+            class="q-opt {{contacted === true ? 'opt-selected opt-warn' : ''}}"
+            bindtap="setContacted"
+            data-value="{{true}}"
+          >
+            <text class="opt-icon">📱</text>
+            <text class="opt-text">联系了</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 分隔线 -->
+      <view class="q-divider"></view>
+
+      <!-- 问题2：情绪 -->
+      <view class="q-block">
+        <view class="q-label">今天情绪怎么样？</view>
+        <view class="mood-row">
+          <view
+            wx:for="{{moods}}"
+            wx:key="index"
+            class="mood-item {{mood === index ? 'mood-selected' : ''}}"
+            bindtap="setMood"
+            data-value="{{index}}"
+          >
+            <text class="mood-icon">{{item.icon}}</text>
+            <text class="mood-label">{{item.label}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 提交 -->
+      <button class="submit-btn" bindtap="submitCheckin" disabled="{{contacted === null}}">
+        完成打卡 ✓
+      </button>
+    </view>
+  </view>
+
+  <!-- ===== 备忘录模式 ===== -->
+  <view class="memo-mode" wx:if="{{mode !== 'checkin'}}">
+    <view class="memo-header">
+      <view class="memo-title">清醒备忘录</view>
+      <view class="memo-sub">动摇的时候来看看</view>
+    </view>
+
+    <scroll-view class="memo-list" scroll-y show-scrollbar="{{false}}">
+      <view class="empty-state" wx:if="{{memos.length === 0}}">
+        <view class="empty-icon">📝</view>
+        <view class="empty-text">还没有记录</view>
+        <view class="empty-hint">写下不联系 TA 的理由，动摇时来看看</view>
+      </view>
+      <block wx:for="{{memos}}" wx:key="index">
+        <view class="memo-item">
+          <view class="memo-accent"></view>
+          <view class="memo-body">
+            <text class="memo-content">{{item.content}}</text>
+            <text class="memo-time">{{item.created_at}}</text>
+          </view>
+          <view class="memo-del" bindtap="deleteMemo" data-index="{{index}}">✕</view>
+        </view>
+      </block>
+      <view style="height: 100px;"></view>
+    </scroll-view>
+
+    <view class="fab" bindtap="showAddInput">
+      <text class="fab-icon">+</text>
+    </view>
+
+    <!-- 添加输入框 -->
+    <view class="add-sheet" wx:if="{{isAdding}}">
+      <view class="add-sheet-title">写下理由</view>
+      <input
+        class="add-input-field"
+        placeholder="为什么不该联系 TA ..."
+        value="{{newMemo}}"
+        bindinput="onNewMemoInput"
+        focus="{{true}}"
+        confirm-type="done"
+        bindconfirm="addMemo"
+      />
+      <button class="add-confirm-btn" bindtap="addMemo">添 加</button>
+    </view>
+  </view>
+</view>

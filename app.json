@@ -1,0 +1,51 @@
+{
+  "pages": [
+    "pages/welcome/index",
+    "pages/story/index",
+    "pages/home/index",
+    "pages/chat/index",
+    "pages/memo/index",
+    "pages/mine/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "失恋晴天",
+    "navigationBarBackgroundColor": "#F8F5FF",
+    "navigationBarTextStyle": "black",
+    "backgroundTextStyle": "light",
+    "backgroundColor": "#F8F5FF"
+  },
+  "tabBar": {
+    "color": "#6B6B8D",
+    "selectedColor": "#9B8EC4",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "主页",
+        "iconPath": "assets/tab/home.png",
+        "selectedIconPath": "assets/tab/home-active.png"
+      },
+      {
+        "pagePath": "pages/chat/index",
+        "text": "聊一聊",
+        "iconPath": "assets/tab/chat.png",
+        "selectedIconPath": "assets/tab/chat-active.png"
+      },
+      {
+        "pagePath": "pages/memo/index",
+        "text": "备忘",
+        "iconPath": "assets/tab/memo.png",
+        "selectedIconPath": "assets/tab/memo-active.png"
+      },
+      {
+        "pagePath": "pages/mine/index",
+        "text": "我的",
+        "iconPath": "assets/tab/mine.png",
+        "selectedIconPath": "assets/tab/mine-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}
