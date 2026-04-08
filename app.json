@@ -22,19 +22,19 @@
     "list": [
       {
         "pagePath": "pages/home/index",
-        "text": "主页",
+        "text": "星星瓶",
         "iconPath": "assets/tab/home.png",
         "selectedIconPath": "assets/tab/home-active.png"
       },
       {
         "pagePath": "pages/chat/index",
-        "text": "聊一聊",
+        "text": "说说话",
         "iconPath": "assets/tab/chat.png",
         "selectedIconPath": "assets/tab/chat-active.png"
       },
       {
         "pagePath": "pages/memo/index",
-        "text": "备忘",
+        "text": "清醒帖",
         "iconPath": "assets/tab/memo.png",
         "selectedIconPath": "assets/tab/memo-active.png"
       },

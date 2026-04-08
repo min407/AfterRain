@@ -5,8 +5,8 @@
       <view class="avatar"><text>☀️</text></view>
     </view>
     <view class="user-meta">
-      <view class="user-name">我的档案</view>
-      <view class="user-sub">失恋晴天 · 陪你走出来</view>
+      <view class="user-name">嘿，你好呀</view>
+      <view class="user-sub">我一直在这里陪着你</view>
     </view>
   </view>
 
@@ -14,25 +14,25 @@
   <view class="stats-strip">
     <view class="strip-item">
       <view class="strip-num">{{days}}</view>
-      <view class="strip-label">累计打卡</view>
+      <view class="strip-label">陪伴天数</view>
     </view>
     <view class="strip-sep"></view>
     <view class="strip-item">
       <view class="strip-num">{{checkinCount}}</view>
-      <view class="strip-label">本月打卡</view>
+      <view class="strip-label">本月记录</view>
     </view>
     <view class="strip-sep"></view>
     <view class="strip-item">
       <view class="strip-num strip-streak">{{streak}}</view>
-      <view class="strip-label">连续天数</view>
+      <view class="strip-label">连续坚持</view>
     </view>
   </view>
 
-  <!-- 故事档案 -->
+  <!-- 你的故事 -->
   <view class="section">
     <view class="section-header">
-      <view class="section-title">故事档案</view>
-      <view class="section-action" bindtap="editStory">编辑 ›</view>
+      <view class="section-title">你的故事</view>
+      <view class="section-action" bindtap="editStory">重新聊聊 ›</view>
     </view>
     <view class="story-card" bindtap="editStory">
       <view class="story-filled" wx:if="{{story}}">
@@ -41,26 +41,26 @@
           <view class="stag stag-duration">{{story.duration}}</view>
           <view class="stag stag-initiator">{{story.initiator}}</view>
         </view>
-        <view class="story-text-block" wx:if="{{story.reason}}">
-          <view class="story-field-label">分手原因</view>
-          <view class="story-field-text">{{story.reason}}</view>
+        <view class="story-text-block" wx:if="{{story.current_thoughts}}">
+          <view class="story-field-label">你说过的话</view>
+          <view class="story-field-text">{{story.current_thoughts}}</view>
         </view>
         <view class="story-text-block" wx:if="{{story.hardest_moment}}">
-          <view class="story-field-label">最难熬的事</view>
+          <view class="story-field-label">最放不下的瞬间</view>
           <view class="story-field-text">{{story.hardest_moment}}</view>
         </view>
       </view>
       <view class="story-empty" wx:else>
         <view class="empty-icon-s">💌</view>
-        <view class="empty-text-s">还没有记录故事，点击去添加</view>
+        <view class="empty-text-s">还没跟我说过你们的故事呢，来聊聊吧</view>
       </view>
     </view>
   </view>
 
-  <!-- 打卡日历 -->
+  <!-- 成长足迹 -->
   <view class="section">
     <view class="section-header">
-      <view class="section-title">打卡日历</view>
+      <view class="section-title">我的足迹</view>
       <view class="cal-nav">
         <view class="nav-btn" bindtap="prevMonth">‹</view>
         <view class="cal-month">{{currentMonth}}</view>
@@ -93,15 +93,15 @@
     <view class="settings-card">
       <view class="setting-row" bindtap="clearData">
         <view class="setting-left">
-          <text class="setting-icon">🗑</text>
-          <text class="setting-text">清空所有数据</text>
+          <text class="setting-icon">🔄</text>
+          <text class="setting-text">重新开始</text>
         </view>
         <text class="setting-arrow">›</text>
       </view>
       <view class="row-divider"></view>
       <view class="setting-row">
         <view class="setting-left">
-          <text class="setting-icon">ℹ️</text>
+          <text class="setting-icon">☀️</text>
           <text class="setting-text">关于失恋晴天</text>
         </view>
         <text class="setting-arrow">›</text>
@@ -109,5 +109,5 @@
     </view>
   </view>
 
-  <view class="footer">失恋晴天 · 分手而已，雨过天会晴</view>
+  <view class="footer">分手而已，雨过天会晴</view>
 </view>

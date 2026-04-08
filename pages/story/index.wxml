@@ -1,9 +1,4 @@
 <view class="container">
-  <!-- 进度指示器 -->
-  <view class="progress-bar">
-    <view class="progress-fill" style="width: {{progress}}%"></view>
-  </view>
-
   <!-- 对话内容区域 -->
   <scroll-view class="chat-area" scroll-y="true" enhanced="{{true}}" show-scrollbar="{{false}}">
     <!-- 已回答的问题 -->
@@ -20,6 +15,15 @@
     </block>
 
     <!-- 当前问题 -->
+    <view class="message ai-message" wx:if="{{showTyping}}">
+      <view class="avatar">
+        <view class="avatar-icon">☀️</view>
+      </view>
+      <view class="bubble bubble-ai typing">
+        <view class="dot"></view><view class="dot"></view><view class="dot"></view>
+      </view>
+    </view>
+
     <view class="message ai-message" wx:if="{{currentQ}}">
       <view class="avatar">
         <view class="avatar-icon">☀️</view>

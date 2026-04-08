@@ -9,46 +9,47 @@ Page({
     currentOptions: [],
     placeholder: "",
     textAnswer: "",
+    showTyping: false,
     // 收集的所有答案
     answers: {}
   },
 
   questions: [
     {
-      question: "你现在和TA的关系是？",
+      question: "先告诉我，你们现在的状态，方便我更好陪你：",
       type: "choice",
-      options: ["已经分手（分手后）", "我们在谈/刚谈分手（分手中）", "我一直想要不要分（摇摆期）"],
+      options: ["已经分开，我在适应", "在谈分手，心里很乱", "还在犹豫/摇摆"],
       key: "scene"
     },
     {
-      question: "你们在一起多久了？",
+      question: "这段关系陪了你多久？",
       type: "choice",
-      options: ["不到3个月", "3个月到1年", "1到3年", "3年以上"],
+      options: ["不到3个月", "3个月-1年", "1-3年", "3年以上"],
       key: "duration"
     },
     {
-      question: "是谁先开口说分手的？",
+      question: "是谁先提的分开？",
       type: "choice",
-      options: ["我提的", "TA提的", "我们商量后决定的"],
+      options: ["我", "TA", "我们一起决定的"],
       key: "initiator"
     },
     {
-      question: "大概是因为什么？",
+      question: "此刻最想说的一句话是什么？",
       type: "text",
-      placeholder: "可以说一下原因，不用很详细...",
-      key: "reason"
+      placeholder: "随便说，碎碎念也可以…",
+      key: "current_thoughts"
     },
     {
-      question: "最让你反复回想的是哪件事？",
+      question: "最近最刺痛/放不下的片段是哪一个？",
       type: "text",
-      placeholder: "那件事是什么样的？",
+      placeholder: "哪怕只是一句话、一幕画面",
       key: "hardest_moment"
     },
     {
-      question: "你现在最常冒出来的念头是？",
-      type: "text",
-      placeholder: "比如：想联系TA、我是不是哪里不够好...",
-      key: "current_thoughts"
+      question: "现在更想让我做什么？",
+      type: "choice",
+      options: ["听你倾诉就好", "帮忙理一理想法", "给一点建议", "还不确定"],
+      key: "need"
     }
   ],
 
@@ -65,13 +66,23 @@ Page({
     }
     const q = questions[currentIndex];
     this.setData({
-      currentQ: q.question,
-      currentType: q.type,
-      currentOptions: q.options || [],
-      placeholder: q.placeholder || "",
+      showTyping: true,
+      currentQ: "",
+      currentType: "",
+      currentOptions: [],
+      placeholder: "",
       textAnswer: "",
       progress: Math.round((currentIndex / questions.length) * 100)
     });
+    setTimeout(() => {
+      this.setData({
+        showTyping: false,
+        currentQ: q.question,
+        currentType: q.type,
+        currentOptions: q.options || [],
+        placeholder: q.placeholder || ""
+      });
+    }, 700);
   },
 
   selectOption(e) {
@@ -127,7 +138,7 @@ Page({
   },
 
   generateSummary(answers) {
-    const { scene, duration, initiator, reason, hardest_moment, current_thoughts } = answers;
+    const { scene, duration, initiator, reason, hardest_moment, current_thoughts, need } = answers;
     let summaryText = "";
 
     if (scene && scene.includes("分手后")) {

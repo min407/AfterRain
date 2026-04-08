@@ -8,13 +8,13 @@
       </view>
       <view class="stat-sep"></view>
       <view class="stat-item">
-        <view class="stat-num stat-target">21</view>
+        <view class="stat-num stat-target">{{targetDays}}</view>
         <view class="stat-label">目标天</view>
       </view>
       <view class="stat-sep"></view>
       <view class="stat-item">
         <view class="stat-num stat-streak">{{streak}}</view>
-        <view class="stat-label">连续打卡</view>
+        <view class="stat-label">连续记录</view>
       </view>
     </view>
     <view class="progress-wrap">
@@ -25,43 +25,64 @@
     </view>
   </view>
 
-  <!-- 玻璃瓶主视觉 -->
+  <!-- 玻璃罐主视觉 -->
   <view class="bottle-section">
     <view class="bottle-outer">
       <view class="bottle-glow-ring"></view>
-      <view class="bottle">
-        <view class="bottle-neck">
-          <view class="bottle-cap"></view>
+      <view class="jar">
+        <!-- 彩虹全息盖（带掀盖动画） -->
+        <view class="jar-lid {{lidOpen ? 'jar-lid--open' : ''}}">
+          <view class="jar-lid-top"></view>
+          <view class="jar-lid-ring"></view>
         </view>
-        <view class="bottle-body">
-          <view class="bottle-shine"></view>
+        <!-- 窄口 + 肩部过渡 -->
+        <view class="jar-neck"></view>
+        <view class="jar-shoulder"></view>
+        <!-- 直筒玻璃罐身（带闪光） -->
+        <view class="jar-body {{jarFlash ? 'jar-body--flash' : ''}}">
+          <view class="jar-shine"></view>
           <view class="stars-container">
             <view
               wx:for="{{stars}}"
               wx:key="index"
-              class="star-item"
+              class="star-item {{item.isNew ? 'star-item--new' : ''}}"
               style="left: {{item.x}}%; top: {{item.y}}%; animation-delay: {{item.delay}}s;"
             >
-              <text class="star-icon" style="color: {{item.color}}; font-size: {{item.size}}px;">★</text>
+              <view class="star-shape" style="background: radial-gradient(circle at 38% 32%, {{item.colorLight}}, {{item.color}}); width: {{item.size}}px; height: {{item.size}}px;"></view>
             </view>
           </view>
         </view>
       </view>
     </view>
-
-    <!-- AI 寄语 -->
-    <view class="quote-card">
-      <text class="quote-mark">"</text>
-      <text class="quote-text">{{quote}}</text>
-    </view>
   </view>
 
-  <!-- 打卡按钮 -->
+  <!-- 飞行中的星星（fixed 定位，脱离文档流） -->
+  <view
+    wx:if="{{flyingStar && flyingStar.visible}}"
+    class="flying-star"
+    style="left:{{flyingStar.left}}px; top:{{flyingStar.top}}px; transform: translate({{flyingStar.flying ? flyingStar.deltaX : 0}}px, {{flyingStar.flying ? flyingStar.deltaY : 0}}px) scale({{flyingStar.flying ? 0.65 : 1.2}}) rotate({{flyingStar.flying ? 200 : 0}}deg); background: radial-gradient(circle at 38% 32%, {{flyingStar.colorLight}}, {{flyingStar.color}});"
+  ></view>
+
+  <!-- 可输入卡片 -->
+  <view class="memo-card">
+    <textarea
+      class="memo-input"
+      placeholder="今天还好吗？有什么想对TA说的话，写下来，折成星星放进罐子里吧..."
+      placeholder-class="memo-placeholder"
+      auto-height="true"
+      cursor-spacing="12"
+      maxlength="200"
+      value="{{memoText}}"
+      bindinput="onInput"
+    ></textarea>
+  </view>
+
+  <!-- 折星星按钮 -->
   <view class="bottom-action">
-    <button class="checkin-btn" bindtap="goCheckin">
+    <button class="checkin-btn" bindtap="foldStar">
       <text class="checkin-icon">✨</text>
-      <text class="checkin-text">今日打卡</text>
+      <text class="checkin-text">说给星星听</text>
     </button>
-    <view class="checkin-hint">30 秒，记录今天</view>
+    <view class="checkin-hint">每写下一句，瓶子就亮一点</view>
   </view>
 </view>

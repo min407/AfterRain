@@ -141,12 +141,15 @@
   position: absolute;
   animation: float-star 3s infinite ease-in-out;
   text-shadow: 0 0 10px currentColor;
+  padding: 3px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.16);
 }
-.b1 { font-size: 19px; color: #FFD700; left: 26%; top: 18%; animation-delay: 0s; }
-.b2 { font-size: 13px; color: #C4B8E8; left: 56%; top: 28%; animation-delay: 0.9s; }
-.b3 { font-size: 15px; color: #FFB6C1; left: 36%; top: 50%; animation-delay: 1.5s; }
-.b4 { font-size: 11px; color: #8EC5FC; left: 62%; top: 62%; animation-delay: 0.5s; }
-.b5 { font-size: 17px; color: #FFD700; left: 20%; top: 66%; animation-delay: 1.9s; }
+.b1 { font-size: 22px; color: #FFD700; left: 24%; top: 18%; animation-delay: 0s; }
+.b2 { font-size: 16px; color: #C4B8E8; left: 56%; top: 28%; animation-delay: 0.9s; }
+.b3 { font-size: 18px; color: #FFB6C1; left: 36%; top: 50%; animation-delay: 1.5s; }
+.b4 { font-size: 14px; color: #8EC5FC; left: 62%; top: 62%; animation-delay: 0.5s; }
+.b5 { font-size: 21px; color: #FFD700; left: 20%; top: 66%; animation-delay: 1.9s; }
 @keyframes float-star {
   0%, 100% { transform: translateY(0) rotate(0deg);    opacity: 0.65; }
   50%       { transform: translateY(-10px) rotate(18deg); opacity: 1; }

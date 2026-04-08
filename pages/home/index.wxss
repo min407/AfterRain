@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   background: linear-gradient(168deg, #F4F0FF 0%, #EDF5FF 60%, #F0F8FF 100%);
-  padding: 16px 20px 32px;
+  padding: 12px 16px 16px;
   box-sizing: border-box;
 }
 
@@ -12,9 +12,9 @@
 .header {
   background: #FFFFFF;
   border-radius: 20px;
-  padding: 20px 24px 16px;
+  padding: 16px 18px 12px;
   box-shadow: 0 2px 12px rgba(155,142,196,0.1), 0 8px 24px rgba(155,142,196,0.06);
-  margin-bottom: 24px;
+  margin-bottom: 12px;
 }
 .stats-row {
   display: flex;
@@ -75,29 +75,30 @@
   text-align: right;
 }
 
-/* ——— 玻璃瓶区域 ——— */
+/* ——— 玻璃罐区域 ——— */
 .bottle-section {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-top: 6px;
 }
 .bottle-outer {
   position: relative;
-  width: 200px;
-  height: 290px;
+  width: 175px;
+  height: 310px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 14px;
 }
 .bottle-glow-ring {
   position: absolute;
-  top: 50%; left: 50%;
+  top: 55%; left: 50%;
   transform: translate(-50%, -50%);
-  width: 220px; height: 220px;
-  background: radial-gradient(circle, rgba(155,142,196,0.14) 0%, transparent 68%);
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(175,210,255,0.18) 0%, transparent 68%);
   border-radius: 50%;
   animation: ring-pulse 3.5s infinite ease-in-out;
 }
@@ -105,7 +106,9 @@
   0%, 100% { transform: translate(-50%,-50%) scale(0.9); opacity: 0.7; }
   50%       { transform: translate(-50%,-50%) scale(1.1); opacity: 1; }
 }
-.bottle {
+
+/* 罐子整体 */
+.jar {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -113,52 +116,120 @@
   z-index: 1;
 }
 
-/* 瓶口 */
-.bottle-neck {
-  width: 54px; height: 34px;
-  background: linear-gradient(180deg,
-    rgba(255,255,255,0.96) 0%,
-    rgba(218,210,248,0.88) 100%);
-  border-radius: 10px 10px 0 0;
-  border: 1.5px solid rgba(155,142,196,0.2);
-  border-bottom: none;
+/* 彩虹全息盖顶 */
+.jar-lid {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: 6px;
+  flex-direction: column;
+  align-items: center;
 }
-.bottle-cap {
-  width: 44px; height: 11px;
-  background: linear-gradient(90deg, #C8BAEC, #A4C6F8, #C8BAEC);
-  border-radius: 5px;
+/* 盖顶（窄口） */
+.jar-lid-top {
+  width: 105px;
+  height: 20px;
+  background: linear-gradient(90deg,
+    #B8E0F8 0%,
+    #C8D5F8 13%,
+    #D8C8EE 26%,
+    #ECC4E0 38%,
+    #F5D8C2 50%,
+    #F5EAAA 62%,
+    #C2EAC8 74%,
+    #A8D8F0 87%,
+    #B8E0F8 100%
+  );
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 -2px 8px rgba(180,210,255,0.35);
+}
+/* 金属螺纹环（窄口） */
+.jar-lid-ring {
+  width: 100px;
+  height: 22px;
+  background: linear-gradient(180deg,
+    #E5E5EE 0%,
+    #C5C5D5 28%,
+    #D8D8E8 52%,
+    #B8B8CC 76%,
+    #CECEDE 100%
+  );
+  border-radius: 0 0 3px 3px;
+  position: relative;
+  overflow: hidden;
+}
+.jar-lid-ring::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0px,
+    transparent 4px,
+    rgba(255,255,255,0.28) 4px,
+    rgba(255,255,255,0.28) 5px,
+    transparent 5px,
+    transparent 8px,
+    rgba(0,0,0,0.07) 8px,
+    rgba(0,0,0,0.07) 9px
+  );
 }
 
-/* 瓶身 */
-.bottle-body {
-  width: 170px; height: 240px;
-  background: linear-gradient(155deg,
-    rgba(255,255,255,0.9) 0%,
-    rgba(234,226,254,0.7) 35%,
-    rgba(220,236,255,0.72) 68%,
-    rgba(255,255,255,0.8) 100%);
-  border-radius: 28px 28px 52px 52px;
-  border: 1.5px solid rgba(155,142,196,0.18);
+/* 窄口颈部 */
+.jar-neck {
+  width: 92px;
+  height: 16px;
+  background: linear-gradient(158deg,
+    rgba(255,255,255,0.92) 0%,
+    rgba(218,238,255,0.75) 50%,
+    rgba(245,252,255,0.88) 100%
+  );
+  border-left: 1.5px solid rgba(180,215,245,0.28);
+  border-right: 1.5px solid rgba(180,215,245,0.28);
+}
+
+/* 肩部过渡（窄口→宽身梯形） */
+.jar-shoulder {
+  width: 155px;
+  height: 22px;
+  background: linear-gradient(158deg,
+    rgba(255,255,255,0.93) 0%,
+    rgba(215,238,255,0.78) 50%,
+    rgba(245,252,255,0.90) 100%
+  );
+  clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+  border: none;
+}
+
+/* 直筒玻璃罐身 */
+.jar-body {
+  width: 155px;
+  height: 218px;
+  background: linear-gradient(158deg,
+    rgba(255,255,255,0.93) 0%,
+    rgba(215,238,255,0.78) 35%,
+    rgba(198,228,252,0.72) 65%,
+    rgba(245,252,255,0.90) 100%
+  );
+  border-radius: 0 0 44px 44px;
+  border: 1.5px solid rgba(180,215,245,0.32);
+  border-top: none;
   position: relative;
   overflow: hidden;
   box-shadow:
-    inset 0 0 32px rgba(255,255,255,0.55),
-    0 20px 52px rgba(155,142,196,0.2),
-    0 4px 14px rgba(155,142,196,0.08);
+    inset 0 0 38px rgba(255,255,255,0.52),
+    inset 0 -18px 38px rgba(195,228,255,0.14),
+    0 22px 52px rgba(140,185,230,0.2),
+    0 4px 12px rgba(140,185,230,0.1);
 }
-.bottle-shine {
+.jar-shine {
   position: absolute;
-  left: 16px; top: 22px;
-  width: 15px; height: 66%;
-  background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, transparent 100%);
+  left: 14px;
+  top: 18px;
+  width: 13px;
+  height: 58%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.78) 0%, transparent 100%);
   border-radius: 8px;
 }
 
-/* 瓶内星星 */
+/* 罐内星星 */
 .stars-container {
   position: absolute;
   inset: 0;
@@ -167,9 +238,21 @@
   position: absolute;
   animation: star-float 3s infinite ease-in-out;
 }
-.star-icon {
-  text-shadow: 0 0 10px currentColor;
-  display: block;
+/* 3D圆润五角星（浅凹谷 = 胖胖的软糖感） */
+.star-shape {
+  clip-path: polygon(
+    50% 0%,
+    62% 27%,
+    98% 32%,
+    72% 55%,
+    82% 93%,
+    50% 74%,
+    18% 93%,
+    28% 55%,
+    2% 32%,
+    38% 27%
+  );
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
   animation: star-twinkle 2.5s infinite ease-in-out;
 }
 @keyframes star-float {
@@ -177,41 +260,97 @@
   50%       { transform: translateY(-7px); }
 }
 @keyframes star-twinkle {
-  0%, 100% { opacity: 0.6; transform: scale(0.88); }
-  50%       { opacity: 1;   transform: scale(1.12); }
+  0%, 100% { opacity: 0.72; transform: scale(0.90); }
+  50%       { opacity: 1;    transform: scale(1.10); }
+}
+
+/* ——— 飞行星星（fixed 脱离文档流） ——— */
+.flying-star {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  z-index: 999;
+  clip-path: polygon(
+    50% 0%, 62% 27%, 98% 32%, 72% 55%,
+    82% 93%, 50% 74%, 18% 93%, 28% 55%,
+    2% 32%, 38% 27%
+  );
+  filter: drop-shadow(0 0 16px rgba(255,215,0,0.65));
+  transition: transform 0.68s cubic-bezier(0.22, 0.85, 0.32, 1);
+  pointer-events: none;
+}
+
+/* ——— 盖子掀开动画 ——— */
+.jar-lid--open {
+  animation: lid-lift 1s ease-in-out forwards;
+}
+@keyframes lid-lift {
+  0%   { transform: translateY(0) rotate(0deg); }
+  25%  { transform: translateY(-18px) rotate(-5deg); }
+  78%  { transform: translateY(-18px) rotate(-5deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+/* ——— 瓶身封存闪光 ——— */
+.jar-body--flash::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 40%,
+    rgba(255,255,255,0.75) 0%,
+    rgba(255,248,210,0.4) 35%,
+    transparent 70%
+  );
+  border-radius: inherit;
+  animation: jar-glow 0.5s ease-out forwards;
+  z-index: 10;
+  pointer-events: none;
+}
+@keyframes jar-glow {
+  0%   { opacity: 1; transform: scale(0.85); }
+  50%  { opacity: 0.9; transform: scale(1.06); }
+  100% { opacity: 0; transform: scale(1); }
+}
+
+/* ——— 新星弹入动画 ——— */
+.star-item--new .star-shape {
+  animation: star-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+@keyframes star-pop {
+  0%   { transform: scale(0); opacity: 0; }
+  55%  { transform: scale(1.35); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 /* ——— AI 寄语卡片 ——— */
-.quote-card {
+.quote-card { display: none; }
+
+/* 文字输入提示卡 */
+.memo-card {
+  margin: 12px 0;
   background: #FFFFFF;
-  border-radius: 18px;
-  padding: 16px 22px;
-  max-width: 300px;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(155,142,196,0.12);
+  padding: 10px 12px 8px;
+  width: 92%;
+  align-self: center;
+}
+.memo-input {
   width: 100%;
-  box-shadow: 0 2px 10px rgba(155,142,196,0.1), 0 6px 20px rgba(155,142,196,0.06);
-  position: relative;
-}
-.quote-mark {
-  font-size: 36px;
-  color: #E8E2F8;
-  line-height: 1;
-  position: absolute;
-  top: 6px; left: 14px;
-  font-family: Georgia, serif;
-}
-.quote-text {
+  min-height: 54px;
+  border: none;
+  padding: 0;
   font-size: 14px;
-  color: #6B6B8D;
-  line-height: 1.7;
-  display: block;
-  padding-left: 20px;
-  padding-top: 4px;
-  letter-spacing: 0.3px;
+  color: #555A78;
+  line-height: 1.5;
+}
+.memo-placeholder {
+  color: #B8BED6;
 }
 
 /* ——— 底部打卡按钮 ——— */
 .bottom-action {
-  padding-top: 24px;
+  padding-top: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -221,8 +360,8 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  width: 220px;
-  height: 56px;
+  width: 200px;
+  height: 52px;
   background: linear-gradient(135deg, #9B8EC4 0%, #7AB8FA 100%);
   border-radius: 28px;
   border: none;

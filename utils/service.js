@@ -2,12 +2,30 @@
 const OPENROUTER_API_KEY = "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";
 const OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
 
+// 将 wx.request Promise 化，避免 await undefined
+const wxRequest = (opts) =>
+  new Promise((resolve, reject) => {
+    wx.request({
+      ...opts,
+      success: resolve,
+      fail: reject,
+    });
+  });
+
 /**
  * 构建 System Prompt
  * 根据用户场景和故事档案定制AI人设
  */
 function buildSystemPrompt(story, mode) {
-  const { scene, duration, initiator, reason, hardest_moment, current_thoughts } = story || {};
+  const {
+    scene,
+    duration,
+    initiator,
+    reason,
+    hardest_moment,
+    current_thoughts,
+    need,
+  } = story || {};
 
   let sceneDesc = "";
   if (scene && scene.includes("分手后")) {
@@ -36,6 +54,7 @@ function buildSystemPrompt(story, mode) {
 - 分手原因：${reason || "待了解"}
 - 最难熬的事：${hardest_moment || "待了解"}
 - 当前主要念头：${current_thoughts || "待了解"}
+- 当前需要：${need || "待了解"}
 
 【回应原则】
 1. 永远先认情绪，再说其他
@@ -60,7 +79,7 @@ export async function chatWithAI(payload) {
   const systemPrompt = buildSystemPrompt(story, mode);
 
   try {
-    const response = await wx.request({
+    const response = await wxRequest({
       url: OPENROUTER_ENDPOINT,
       method: "POST",
       header: {
@@ -81,11 +100,12 @@ export async function chatWithAI(payload) {
       }
     });
 
-    if (response.data && response.data.choices && response.data.choices[0]) {
-      return response.data.choices[0].message.content;
+    const data = response?.data;
+    if (data && data.choices && data.choices[0]) {
+      return data.choices[0].message.content;
     }
 
-    console.error("API响应异常:", response.data);
+    console.error("API响应异常:", data);
     return "抱歉，我现在有点累，让我们稍后再聊吧。";
 
   } catch (error) {
