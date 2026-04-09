@@ -97,6 +97,34 @@ async function chatWithAI(payload) {
 
   const systemPrompt = buildSystemPrompt(story, mode);
 
+  // 优先走云函数（避免域名白名单限制）
+  if (wx && wx.cloud) {
+    try {
+      const cloudRes = await wx.cloud.callFunction({
+        name: "openrouterProxy",
+        data: { mode, story, content },
+        timeout: 25000
+      });
+      const data = cloudRes?.result;
+      if (data && data.success && data.reply) {
+        return data.reply;
+      }
+      if (data && data.error === "TIMEOUT") {
+        return "这边等得有点久，先缓一缓。我稍后再帮你想想，可以先深呼吸或写下此刻的念头。";
+      }
+      console.error("CloudFn返回异常:", data);
+      if (USE_LOCAL_FALLBACK_ON_ERROR) {
+        return localFallbackReply({ content, story, mode });
+      }
+    } catch (err) {
+      console.error("调用云函数失败:", err);
+      if (USE_LOCAL_FALLBACK_ON_ERROR) {
+        return localFallbackReply({ content, story, mode });
+      }
+    }
+  }
+
+  // 兜底：直接请求（需要配域名白名单）
   try {
     const response = await wxRequest({
       url: MINI_MAX_ENDPOINT,

@@ -3,8 +3,9 @@ const cloud = require("wx-server-sdk");
 
 cloud.init({ env: "dev-3gwv4qw4b16fe302" });
 
-const MINIMAX_ENDPOINT = "https://api.minimaxi.com/v1/chat/completions";
+const MINIMAX_ENDPOINT = "https://api.minimax.chat/v1/text/chatcompletion_v2";
 const MODEL_ID = "MiniMax-M2.5";
+const MINIMAX_API_KEY = "fc662a434babb407a1bdcc187fd7d2a54da1a075d6dc2faab21973b4d603525e";
 const REQUEST_TIMEOUT_MS = 20000;
 
 function buildSystemPrompt(story = {}, mode = "companionship") {
@@ -78,7 +79,7 @@ exports.main = async (event) => {
     const res = await fetch(MINIMAX_ENDPOINT, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.MINIMAX_API_KEY}`,
+        "Authorization": `Bearer ${MINIMAX_API_KEY}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
