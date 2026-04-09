@@ -104,16 +104,29 @@ exports.main = async (event) => {
     });
     clearTimeout(timer);
 
-    const data = await res.json();
-    console.log("API响应:", JSON.stringify(data));
+    let data;
+    try {
+      const text = await res.text();
+      console.log("API响应文本:", text.slice(0, 500));
+      data = JSON.parse(text);
+    } catch (e) {
+      console.error("JSON解析失败:", e, "原始内容:", await res.text());
+      return { error: "JSON_PARSE_ERROR", detail: e.message };
+    }
 
     if (data.base_resp?.status_code !== 0) {
       console.error("API错误:", data.base_resp);
       return { error: "API_ERROR", detail: data };
     }
 
-    // 正常返回格式
-    return { success: true, reply: data.reply || data.choices?.[0]?.message?.content };
+    // 处理空回复
+    const reply = data.reply;
+    if (!reply || reply.trim() === "") {
+      console.error("空回复:", data);
+      return { error: "EMPTY_REPLY", detail: data };
+    }
+
+    return { success: true, reply };
   } catch (err) {
     clearTimeout(timer);
     console.error("MiniMax API error", err.message);
