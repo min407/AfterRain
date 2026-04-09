@@ -28,10 +28,10 @@
     </view>
   </view>
 
-  <!-- 你的故事 -->
+  <!-- 我的故事 -->
   <view class="section">
     <view class="section-header">
-      <view class="section-title">你的故事</view>
+      <view class="section-title">我的故事</view>
       <view class="section-action" bindtap="editStory">重新聊聊 ›</view>
     </view>
     <view class="story-card" bindtap="editStory">
@@ -42,7 +42,7 @@
           <view class="stag stag-initiator">{{story.initiator}}</view>
         </view>
         <view class="story-text-block" wx:if="{{story.current_thoughts}}">
-          <view class="story-field-label">你说过的话</view>
+          <view class="story-field-label">我的状态</view>
           <view class="story-field-text">{{story.current_thoughts}}</view>
         </view>
         <view class="story-text-block" wx:if="{{story.hardest_moment}}">
