@@ -96,30 +96,20 @@ exports.main = async (event) => {
     clearTimeout(timer);
 
     const data = await res.json();
-    console.log("MiniMax响应:", JSON.stringify(data).slice(0, 500));
+    console.log("MiniMax响应:", JSON.stringify(data));
+    console.log("status:", res.status, "ok:", res.ok);
 
     if (!res.ok) {
       console.error("MiniMax API error", res.status, data);
       return { error: "REQUEST_FAILED", status: res.status, detail: data };
     }
 
-    // MiniMax API 返回格式: { code: 0, success: true, reply: "..." }
-    if (data.success && data.reply) {
-      return { success: true, reply: data.reply };
-    }
+    console.log("API返回keys:", Object.keys(data));
+    console.log("data.reply:", data.reply);
+    console.log("data.choices:", data.choices);
 
-    // 兼容 OpenAI 格式
-    if (data.choices && data.choices[0]?.message?.content) {
-      let reply = data.choices[0].message.content;
-      // 处理数组格式的 content
-      if (Array.isArray(reply)) {
-        const textParts = reply.filter(b => b.type === "text");
-        reply = textParts.map(b => b.text).join("");
-      }
-      return { success: true, reply };
-    }
-
-    return { error: "NO_REPLY", detail: data };
+    // 查看完整数据结构
+    return { success: true, detail: data };
   } catch (err) {
     clearTimeout(timer);
     console.error("MiniMax API error", err.message);
