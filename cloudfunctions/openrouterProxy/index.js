@@ -5,7 +5,7 @@ cloud.init({ env: "dev-3gwv4qw4b16fe302" });
 
 const MINIMAX_ENDPOINT = "https://api.minimax.chat/v1/text/chatcompletion_v2";
 const MODEL_ID = "MiniMax-M2.5";
-const MINIMAX_API_KEY = "fc662a434babb407a1bdcc187fd7d2a54da1a075d6dc2faab21973b4d603525e";
+const MINIMAX_API_KEY = "sk-cp-sFUNQqp2fLkOjmX2mp-bi8fTXu3rFZn5MOGkA2uTZfr585xkp3pxQYVJZuRZplyJUX4qHZc9VlpyTkiAP7PWu4-VP_7MkibIz6zPCitjb7MxtY9FWiw5N-s";
 
 // 尝试不同的认证格式
 const AUTH_HEADER = "Bearer " + MINIMAX_API_KEY;

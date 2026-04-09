@@ -1,6 +1,6 @@
 // AI 对话服务 - 基于 MiniMax API
 // 注意：生产环境请将密钥移入云函数或环境变量，避免明文暴露
-const MINI_MAX_API_KEY = "fc662a434babb407a1bdcc187fd7d2a54da1a075d6dc2faab21973b4d603525e";
+const MINI_MAX_API_KEY = "sk-cp-sFUNQqp2fLkOjmX2mp-bi8fTXu3rFZn5MOGkA2uTZfr585xkp3pxQYVJZuRZplyJUX4qHZc9VlpyTkiAP7PWu4-VP_7MkibIz6zPCitjb7MxtY9FWiw5N-s";
 const MINI_MAX_ENDPOINT = "https://api.minimax.chat/v1/text/chatcompletion_v2";
 const MODEL_NAME = "MiniMax-M2.5";
 
