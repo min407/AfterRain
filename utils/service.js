@@ -1,12 +1,13 @@
-// AI 对话服务 - 基于 OpenRouter Claude API
+// AI 对话服务 - 基于 MiniMax API
 // 注意：生产环境请将密钥移入云函数或环境变量，避免明文暴露
-const OPENROUTER_API_KEY = "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";
-const OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
+const MINI_MAX_API_KEY = "fc662a434babb407a1bdcc187fd7d2a54da1a075d6dc2faab21973b4d603525e";
+const MINI_MAX_ENDPOINT = "https://api.minimax.chat/v1/text/chatcompletion_v2";
+const MODEL_NAME = "MiniMax-M2.5";
+
 // 兜底开关：仅在请求失败时返回本地离线回复，正常情况下始终走真实模型
 const USE_LOCAL_FALLBACK_ON_ERROR = true;
-const CLOUD_FUNCTION_NAME = "openrouterProxy";
 
-// 将 wx.request Promise 化，避免 await undefined
+// 将 wx.request Promise 化
 const wxRequest = (opts) =>
   new Promise((resolve, reject) => {
     wx.request({
@@ -16,16 +17,7 @@ const wxRequest = (opts) =>
     });
   });
 
-function getEnvVersionSafe() {
-  try {
-    const info = wx.getAccountInfoSync();
-    return info?.miniProgram?.envVersion || "release";
-  } catch (e) {
-    return "release";
-  }
-}
-
-// 本地兜底回复，避免网络失败时出现“抱歉我累了”的空白体验
+// 本地兜底回复，避免网络失败时出现空白体验
 function localFallbackReply({ content, story, mode }) {
   const name = mode === "calm" ? "清醒" : mode === "reflect" ? "复盘" : "陪伴";
   const detail = story?.hardest_moment || story?.current_thoughts || "你刚刚的分享";
@@ -99,69 +91,35 @@ function buildSystemPrompt(story, mode) {
 
 /**
  * 聊天接口
- * @param {Object} payload
- * @param {string} payload.mode - 模式：calm/reflect/companionship
- * @param {Object} payload.story - 用户故事档案
- * @param {string} payload.content - 用户输入
  */
 async function chatWithAI(payload) {
   const { mode = "companionship", story = {}, content } = payload;
 
-  const env = getEnvVersionSafe();
   const systemPrompt = buildSystemPrompt(story, mode);
-
-  // 优先走云函数（真机/正式环境推荐），避免域名白名单限制
-  if (wx && wx.cloud) {
-    try {
-      const cloudRes = await wx.cloud.callFunction({
-        name: CLOUD_FUNCTION_NAME,
-        data: { mode, story, content },
-        timeout: 30000
-      });
-      const data = cloudRes?.result;
-      if (data && data.choices && data.choices[0]) {
-        return data.choices[0].message.content;
-      }
-      console.error("CloudFn返回异常:", data);
-      if (data && data.error === "TIMEOUT") {
-        return "这边等得有点久，先缓一缓。我稍后再帮你想想，可以先深呼吸或写下此刻的念头。";
-      }
-      if (USE_LOCAL_FALLBACK_ON_ERROR) {
-        return localFallbackReply({ content, story, mode });
-      }
-    } catch (err) {
-      console.error("调用云函数失败:", err);
-      if (USE_LOCAL_FALLBACK_ON_ERROR) {
-        return localFallbackReply({ content, story, mode });
-      }
-    }
-  }
 
   try {
     const response = await wxRequest({
-      url: OPENROUTER_ENDPOINT,
+      url: MINI_MAX_ENDPOINT,
       method: "POST",
       header: {
-        "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://失恋晴天.weixin.qq.com",
-        "X-Title": "失恋晴天"
+        "Authorization": `Bearer ${MINI_MAX_API_KEY}`,
+        "Content-Type": "application/json"
       },
       data: {
-        model: "minimax/minimax-m2.5",
+        model: MODEL_NAME,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content }
         ],
         max_tokens: 300,
-        temperature: 0.7,
-        stream: false
+        temperature: 0.7
       }
     });
 
     const { statusCode, data } = response || {};
-    if (statusCode === 200 && data && data.choices && data.choices[0]) {
-      return data.choices[0].message.content;
+    // MiniMax API 返回格式: { code: 0, success: true, reply: "...", ... }
+    if (statusCode === 200 && data && data.success && data.reply) {
+      return data.reply;
     }
 
     console.error("AI响应异常:", statusCode, data);
@@ -181,7 +139,6 @@ async function chatWithAI(payload) {
 
 /**
  * 流式对话（微信小程序不支持真正的流式，需模拟）
- * 为后续优化保留接口
  */
 async function chatWithAIStream(payload) {
   return chatWithAI(payload);

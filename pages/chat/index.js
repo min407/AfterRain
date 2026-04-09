@@ -1,13 +1,5 @@
-// AI对话页 - 3种模式 + 对话界面 + Claude API接入
-// 模拟回复函数
-function chatWithAI模拟(content) {
-  const replies = {
-    calm: "先别急着联系TA，深呼吸一下。你想发的消息可以先写下来，别发送。",
-    reflect: "这段关系里让你最在意的是什么时候？可以想一想那时的感受。",
-    companionship: "我在这里听你说。慢慢来，不着急。"
-  };
-  return replies.companionship;
-}
+// AI对话页 - 3种模式 + 对话界面 + AI接入
+const { chatWithAI } = require("../../utils/service");
 
 Page({
   data: {
@@ -37,7 +29,6 @@ Page({
   },
 
   onLoad() {
-    // 检查是否有故事档案，没有则在聊天入口页显示引导
     const story = wx.getStorageSync("storySummary");
     this.setData({ hasStory: !!story });
   },
@@ -72,7 +63,6 @@ Page({
       return;
     }
     this.setData({ isChatting: true });
-    // 添加欢迎消息
     this.addMessage("ai", this.data.welcomeMsg);
   },
 
@@ -95,7 +85,6 @@ Page({
       messages,
       scrollIntoView: `msg-${messages.length - 1}`
     });
-    // 滚动到底部
     setTimeout(() => {
       this.setData({ scrollIntoView: "bottom" });
     }, 100);
@@ -105,12 +94,16 @@ Page({
     const content = this.data.input.trim();
     if (!content) return;
 
-    // 添加用户消息
     this.addMessage("user", content);
     this.setData({ input: "", isLoading: true });
 
     try {
-      const reply = chatWithAI模拟(content);
+      const story = wx.getStorageSync("storySummary") || {};
+      const reply = await chatWithAI({
+        mode: this.data.selectedMode,
+        story,
+        content
+      });
       this.addMessage("ai", reply);
     } catch (error) {
       console.error("AI对话错误:", error);
