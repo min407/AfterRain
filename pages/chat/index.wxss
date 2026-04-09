@@ -174,14 +174,24 @@
   padding: 20px 16px 12px;
   background: #FDFCFF;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 .message {
   display: flex;
   margin-bottom: 18px;
   align-items: flex-end;
 }
-.message.ai   { flex-direction: row; }
-.message.user { flex-direction: row-reverse; }
+.message.ai   { flex-direction: row; justify-content: flex-start; }
+.message.user { flex-direction: row-reverse; justify-content: flex-start; }
+
+/* 给消息留出页面边距 */
+.message .avatar {
+  margin: 0 4px;
+}
+.message .bubble {
+  max-width: 70%;
+  margin: 0 4px;
+}
 
 /* AI 头像 */
 .avatar {
