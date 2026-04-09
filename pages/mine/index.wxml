@@ -5,8 +5,7 @@
       <view class="avatar"><text>☀️</text></view>
     </view>
     <view class="user-meta">
-      <view class="user-name">嘿，你好呀</view>
-      <view class="user-sub">我一直在这里陪着你</view>
+      <view class="user-sub">会过去的，向前走吧</view>
     </view>
   </view>
 
