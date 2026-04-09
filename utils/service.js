@@ -113,42 +113,20 @@ async function chatWithAI(payload) {
       // { base_resp: { status_code: 0 }, reply: "..." }
       // { choices: [{ message: { content: "..." } }] }
       if (data) {
-        if (data.reply) {
-          // 格式1: { reply: "..." } 或 { success: true, reply: "..." }
-          // 格式2: { base_resp: { status_code: 0 }, reply: "..." }
-          if (data.success !== false && data.base_resp?.status_code === 0) {
-            return data.reply;
-          }
-          if (data.success === true && data.reply) {
-            return data.reply;
-          }
+        // 成功：{ success: true, reply: "..." }
+        if (data.success === true && data.reply) {
+          return data.reply;
         }
-        // 格式3: OpenAI 格式
-        if (data.choices && data.choices[0]?.message?.content) {
-          return data.choices[0].message.content;
-        }
-        // 错误情况
-        if (data.error || data.base_resp?.status_code !== 0) {
-          console.error("CloudFn错误:", data);
-          if (data.error === "TIMEOUT" || data.base_resp?.status_msg?.includes("timeout")) {
-            return "这边等得有点久，先缓一缓。";
-          }
-          if (data.error === "OVERLOADED" || data.base_resp?.status_msg?.includes("负载")) {
-            return "晴天正在休息，稍后再来找她吧~";
-          }
-          if (data.error === "API_ERROR" || data.base_resp?.status_code === 1000) {
-            return "晴天有点累，让我休息一下再找你~";
-          }
+        // 错误：记录详细日志，抛出错误让上层处理
+        if (data.error) {
+          console.error("CloudFn错误:", JSON.stringify(data));
+          throw new Error(data.error + (data.detail ? ": " + JSON.stringify(data.detail) : ""));
         }
       }
-      if (USE_LOCAL_FALLBACK_ON_ERROR) {
-        return localFallbackReply({ content, story, mode });
-      }
+      throw new Error("云函数返回格式异常: " + JSON.stringify(data));
     } catch (err) {
-      console.error("调用云函数失败:", err);
-      if (USE_LOCAL_FALLBACK_ON_ERROR) {
-        return localFallbackReply({ content, story, mode });
-      }
+      console.error("调用云函数失败:", err.message);
+      throw err;
     }
   }
 

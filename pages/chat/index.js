@@ -106,9 +106,20 @@ Page({
       });
       this.addMessage("ai", reply);
     } catch (error) {
-      console.error("AI对话错误:", error);
-      this.addMessage("ai", "抱歉，我现在有点累，让我们稍后再聊吧。");
-      wx.showToast({ title: "AI暂时不可用", icon: "none" });
+      console.error("AI对话错误:", error.message);
+      const msg = error.message || "";
+      let toastTitle = "AI调用失败，请重试";
+      if (msg.includes("OVERLOADED") || msg.includes("ALL_MODELS_FAILED")) {
+        toastTitle = "MiniMax服务繁忙，请稍后重试";
+      } else if (msg.includes("TIMEOUT")) {
+        toastTitle = "请求超时，请重试";
+      }
+      wx.showModal({
+        title: "连接失败",
+        content: toastTitle + "\n\n错误详情：" + msg.slice(0, 100),
+        showCancel: false,
+        confirmText: "知道了"
+      });
     } finally {
       this.setData({ isLoading: false });
     }

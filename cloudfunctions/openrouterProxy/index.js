@@ -1,34 +1,31 @@
-// 云函数：代理调用 MiniMax API，避免小程序域名限制
+// 云函数：代理调用 MiniMax API（主） + OpenRouter（备）
 const cloud = require("wx-server-sdk");
 
 cloud.init({ env: "dev-3gwv4qw4b16fe302" });
 
+// ── MiniMax ──────────────────────────────────────────────
 const MINIMAX_ENDPOINT = "https://api.minimax.chat/v1/text/chatcompletion_v2";
-const MODEL_ID = "MiniMax-M2.5";
 const MINIMAX_API_KEY = "sk-cp-sFUNQqp2fLkOjmX2mp-bi8fTXu3rFZn5MOGkA2uTZfr585xkp3pxQYVJZuRZplyJUX4qHZc9VlpyTkiAP7PWu4-VP_7MkibIz6zPCitjb7MxtY9FWiw5N-s";
+const MINIMAX_MODELS = ["MiniMax-M2.7", "MiniMax-M2.5"];
 
-// 尝试不同的认证格式
-const AUTH_HEADER = "Bearer " + MINIMAX_API_KEY;
-console.log("认证头:", AUTH_HEADER.slice(0, 30) + "...");
+// ── OpenRouter（兜底） ────────────────────────────────────
+const OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
+const OPENROUTER_API_KEY = "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";
+const OPENROUTER_MODEL = "anthropic/claude-sonnet-4";
+
+const MAX_RETRIES_PER_MODEL = 3;
 const REQUEST_TIMEOUT_MS = 20000;
 
+// ── System Prompt ─────────────────────────────────────────
 function buildSystemPrompt(story = {}, mode = "companionship") {
-  const {
-    scene,
-    duration,
-    initiator,
-    reason,
-    hardest_moment,
-    current_thoughts,
-    need,
-  } = story || {};
+  const { scene, duration, initiator, reason, hardest_moment, current_thoughts, need } = story || {};
 
   let sceneDesc = "";
-  if (scene && scene.includes("分手后")) {
+  if (scene && (scene.includes("分手后") || scene.includes("已经分开"))) {
     sceneDesc = "用户已经和TA分手，正在努力走出来";
-  } else if (scene && scene.includes("分手中")) {
+  } else if (scene && (scene.includes("分手中") || scene.includes("在谈分手"))) {
     sceneDesc = "用户正在谈分手或刚谈完分手";
-  } else if (scene && scene.includes("摇摆期")) {
+  } else if (scene && (scene.includes("摇摆") || scene.includes("犹豫"))) {
     sceneDesc = "用户还在犹豫要不要分手";
   }
 
@@ -68,17 +65,37 @@ function buildSystemPrompt(story = {}, mode = "companionship") {
 `;
 }
 
-exports.main = async (event) => {
-  const { mode = "companionship", story = {}, content } = event || {};
-  if (!content) {
-    return { error: "NO_CONTENT" };
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// ── 解析 MiniMax 响应（兼容 NDJSON 多行格式） ────────────
+function parseMinimaxResponse(text) {
+  const lines = text.trim().split("\n").filter(l => l.trim());
+  const parsed = [];
+  for (const line of lines) {
+    try { parsed.push(JSON.parse(line)); } catch (e) { /* skip */ }
   }
+  if (parsed.length === 0) return { parseError: true };
 
-  const systemPrompt = buildSystemPrompt(story, mode);
+  for (const d of parsed) {
+    const reply = d.reply || d.choices?.[0]?.message?.content;
+    if (reply && reply.trim()) return { ok: true, reply: reply.trim() };
+  }
+  for (const d of parsed) {
+    if (d.error?.type === "overloaded_error") return { overloaded: true };
+    if (d.base_resp?.status_code !== undefined && d.base_resp.status_code !== 0) {
+      return { apiError: true, code: d.base_resp.status_code, msg: d.base_resp.status_msg };
+    }
+    if (d.error) return { apiError: true, detail: d.error };
+  }
+  return { unknown: true };
+}
 
+// ── 调用 MiniMax ──────────────────────────────────────────
+async function requestMinimax(model, systemPrompt, content) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-
   try {
     const res = await fetch(MINIMAX_ENDPOINT, {
       method: "POST",
@@ -87,7 +104,8 @@ exports.main = async (event) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "MiniMax-M2.5",
+        model,
+        stream: false,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content }
@@ -97,52 +115,102 @@ exports.main = async (event) => {
       }),
       signal: controller.signal
     });
-    console.log("发送的请求:", {
-      url: MINIMAX_ENDPOINT,
-      model: "MiniMax-M2.5",
-      authKey: MINIMAX_API_KEY.slice(0, 10) + "..."
-    });
     clearTimeout(timer);
-
-    let data;
-    try {
-      const text = await res.text();
-      console.log("API响应文本:", text.slice(0, 800));
-      data = JSON.parse(text);
-    } catch (e) {
-      const rawText = await res.text();
-      console.error("JSON解析失败:", e.message, "原始:", rawText.slice(0, 500));
-      return { error: "JSON_PARSE_ERROR", detail: e.message };
-    }
-
-    if (data.base_resp?.status_code !== 0 || data.error) {
-      console.error("API错误:", data.base_resp || data.error);
-      // 服务过载
-      if (data.error?.type === "overloaded_error") {
-        return { error: "OVERLOADED", detail: "当前服务繁忙，请稍后重试" };
-      }
-      return { error: "API_ERROR", detail: data };
-    }
-
-    // 处理回复 - 兼容多种格式
-    let reply = data.reply || data.choices?.[0]?.message?.content;
-    // 如果 content 为空，尝试从 reasoning_content 取
-    if (!reply || reply.trim() === "") {
-      reply = data.choices?.[0]?.message?.reasoning_content;
-    }
-    // 如果还是空，返回错误
-    if (!reply || reply.trim() === "") {
-      console.error("空回复:", data);
-      return { error: "EMPTY_REPLY", detail: data };
-    }
-
-    return { success: true, reply };
+    const text = await res.text();
+    console.log(`[MiniMax:${model}] HTTP ${res.status}:`, text.slice(0, 500));
+    return parseMinimaxResponse(text);
   } catch (err) {
     clearTimeout(timer);
-    console.error("MiniMax API error", err.message);
-    if (err.name === "AbortError") {
-      return { error: "TIMEOUT", detail: "MiniMax request timeout" };
-    }
-    return { error: "REQUEST_FAILED", detail: err.message };
+    if (err.name === "AbortError") return { timeout: true };
+    return { fetchError: err.message };
   }
+}
+
+// ── 调用 OpenRouter ───────────────────────────────────────
+async function requestOpenRouter(systemPrompt, content) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  try {
+    console.log("[OpenRouter] 开始调用，model:", OPENROUTER_MODEL);
+    const res = await fetch(OPENROUTER_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + OPENROUTER_API_KEY,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://miniprogram.weixin.qq.com",
+        "X-Title": "失恋晴天"
+      },
+      body: JSON.stringify({
+        model: OPENROUTER_MODEL,
+        stream: false,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content }
+        ],
+        max_tokens: 300,
+        temperature: 0.7
+      }),
+      signal: controller.signal
+    });
+    clearTimeout(timer);
+    const text = await res.text();
+    console.log(`[OpenRouter] HTTP ${res.status}:`, text.slice(0, 500));
+
+    let data;
+    try { data = JSON.parse(text); } catch (e) {
+      return { parseError: true };
+    }
+
+    const reply = data.choices?.[0]?.message?.content;
+    if (reply && reply.trim()) return { ok: true, reply: reply.trim() };
+
+    if (data.error) return { apiError: true, detail: data.error };
+    return { unknown: true };
+  } catch (err) {
+    clearTimeout(timer);
+    if (err.name === "AbortError") return { timeout: true };
+    return { fetchError: err.message };
+  }
+}
+
+// ── 主入口 ────────────────────────────────────────────────
+exports.main = async (event) => {
+  const { mode = "companionship", story = {}, content } = event || {};
+  if (!content) return { error: "NO_CONTENT" };
+
+  const systemPrompt = buildSystemPrompt(story, mode);
+
+  // 1. 依次尝试 MiniMax 模型
+  for (const model of MINIMAX_MODELS) {
+    console.log(`===== 尝试 MiniMax 模型: ${model} =====`);
+    for (let attempt = 1; attempt <= MAX_RETRIES_PER_MODEL; attempt++) {
+      const result = await requestMinimax(model, systemPrompt, content);
+
+      if (result.ok) {
+        console.log(`MiniMax 成功！model=${model} attempt=${attempt}`);
+        return { success: true, reply: result.reply };
+      }
+      if (result.overloaded) {
+        const delay = attempt * 1500;
+        console.log(`[${model}] 过载 attempt=${attempt}，等 ${delay}ms...`);
+        if (attempt < MAX_RETRIES_PER_MODEL) { await sleep(delay); continue; }
+        console.log(`[${model}] 重试耗尽，切换`);
+        break;
+      }
+      // 超时 / 其他错误 → 不重试，直接切下一个
+      console.log(`[${model}] 错误:`, JSON.stringify(result).slice(0, 150));
+      break;
+    }
+  }
+
+  // 2. MiniMax 全部失败 → 切 OpenRouter
+  console.log("===== MiniMax 不可用，切换至 OpenRouter =====");
+  const orResult = await requestOpenRouter(systemPrompt, content);
+  if (orResult.ok) {
+    console.log("OpenRouter 成功！");
+    return { success: true, reply: orResult.reply };
+  }
+
+  console.error("OpenRouter 也失败:", JSON.stringify(orResult).slice(0, 200));
+  return { error: "ALL_FAILED", detail: orResult };
 };

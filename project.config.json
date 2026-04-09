@@ -21,7 +21,9 @@
   "packOptions": {
     "ignore": [
       { "type": "folder", "value": "对标材料" },
-      { "type": "file", "value": "MVP_产品规划.md" }
+      { "type": "file", "value": "MVP_产品规划.md" },
+      { "type": "file", "value": "logo.jpg" },
+      { "type": "file", "value": "头像.jpg" }
     ],
     "include": []
   },
