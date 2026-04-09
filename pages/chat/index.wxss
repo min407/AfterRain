@@ -196,6 +196,9 @@
   margin: 0 8px;
   box-shadow: 0 3px 10px rgba(155,142,196,0.28);
 }
+.user-avatar {
+  background: linear-gradient(135deg, #F5A0B0 0%, #F5CE60 100%);
+}
 
 /* 气泡 */
 .bubble {

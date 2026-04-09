@@ -74,6 +74,9 @@
           <view class="avatar" wx:if="{{item.from === 'ai'}}">
             <text>☀️</text>
           </view>
+          <view class="avatar user-avatar" wx:if="{{item.from === 'user'}}">
+            <text>👤</text>
+          </view>
           <view class="bubble bubble-{{item.from}}">{{item.text}}</view>
         </view>
       </block>
