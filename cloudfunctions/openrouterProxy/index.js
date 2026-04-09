@@ -83,11 +83,11 @@ exports.main = async (event) => {
     const res = await fetch(MINIMAX_ENDPOINT, {
       method: "POST",
       headers: {
-        "Authorization": MINIMAX_API_KEY,  // 无 Bearer 前缀
+        "Authorization": "Bearer " + MINIMAX_API_KEY,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: MODEL_ID,
+        model: "MiniMax-M2.5",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content }
@@ -96,6 +96,11 @@ exports.main = async (event) => {
         temperature: 0.7
       }),
       signal: controller.signal
+    });
+    console.log("发送的请求:", {
+      url: MINIMAX_ENDPOINT,
+      model: "MiniMax-M2.5",
+      authKey: MINIMAX_API_KEY.slice(0, 10) + "..."
     });
     clearTimeout(timer);
 
