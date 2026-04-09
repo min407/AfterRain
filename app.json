@@ -28,19 +28,19 @@
       },
       {
         "pagePath": "pages/chat/index",
-        "text": "说说话",
+        "text": "晴天树洞",
         "iconPath": "assets/tab/chat.png",
         "selectedIconPath": "assets/tab/chat-active.png"
       },
       {
         "pagePath": "pages/memo/index",
-        "text": "清醒帖",
+        "text": "清醒时刻",
         "iconPath": "assets/tab/memo.png",
         "selectedIconPath": "assets/tab/memo-active.png"
       },
       {
         "pagePath": "pages/mine/index",
-        "text": "我的",
+        "text": "戒断日历",
         "iconPath": "assets/tab/mine.png",
         "selectedIconPath": "assets/tab/mine-active.png"
       }
