@@ -72,7 +72,7 @@
       <block wx:for="{{messages}}" wx:key="index">
         <view class="message {{item.from}}" id="msg-{{index}}">
           <view class="avatar" wx:if="{{item.from === 'ai'}}">
-            <text>☀️</text>
+            <image class="ai-avatar-img" src="/assets/avatar/头像.jpg" mode="aspectFill"></image>
           </view>
           <view class="avatar user-avatar" wx:if="{{item.from === 'user'}}">
             <text>👤</text>
@@ -83,7 +83,7 @@
 
       <!-- 加载中 typing 动画 -->
       <view class="message ai typing-wrap" wx:if="{{isLoading}}">
-        <view class="avatar"><text>☀️</text></view>
+        <view class="avatar"><image class="ai-avatar-img" src="/assets/avatar/头像.jpg" mode="aspectFill"></image></view>
         <view class="bubble bubble-ai typing">
           <view class="dot"></view>
           <view class="dot"></view>
