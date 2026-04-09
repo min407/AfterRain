@@ -89,31 +89,37 @@ exports.main = async (event) => {
           { role: "user", content }
         ],
         max_tokens: 200,
-        temperature: 0.7,
-        stream: false
+        temperature: 0.7
       }),
       signal: controller.signal
     });
     clearTimeout(timer);
 
     const data = await res.json();
+    console.log("MiniMax响应:", JSON.stringify(data).slice(0, 500));
+
     if (!res.ok) {
       console.error("MiniMax API error", res.status, data);
       return { error: "REQUEST_FAILED", status: res.status, detail: data };
     }
 
-    // 过滤掉思考内容，只保留最终文本回复
-    if (data.choices && data.choices[0] && data.choices[0].message) {
-      const msg = data.choices[0].message;
-      // 只保留 text 类型的 content，去掉 thinking/reasoning
-      if (Array.isArray(msg.content)) {
-        const textParts = msg.content.filter(b => b.type === "text");
-        msg.content = textParts.map(b => b.text).join("");
-      }
-      // 移除 reasoning_content 字段
-      delete msg.reasoning_content;
+    // MiniMax API 返回格式: { code: 0, success: true, reply: "..." }
+    if (data.success && data.reply) {
+      return { success: true, reply: data.reply };
     }
-    return data;
+
+    // 兼容 OpenAI 格式
+    if (data.choices && data.choices[0]?.message?.content) {
+      let reply = data.choices[0].message.content;
+      // 处理数组格式的 content
+      if (Array.isArray(reply)) {
+        const textParts = reply.filter(b => b.type === "text");
+        reply = textParts.map(b => b.text).join("");
+      }
+      return { success: true, reply };
+    }
+
+    return { error: "NO_REPLY", detail: data };
   } catch (err) {
     clearTimeout(timer);
     console.error("MiniMax API error", err.message);

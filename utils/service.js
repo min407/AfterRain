@@ -105,14 +105,20 @@ async function chatWithAI(payload) {
         data: { mode, story, content },
         timeout: 25000
       });
+      console.log("CloudFn原始返回:", cloudRes);
       const data = cloudRes?.result;
-      if (data && data.success && data.reply) {
-        return data.reply;
+      console.log("CloudFn result:", data);
+
+      // 兼容多种返回格式
+      if (data && (data.reply || (data.choices && data.choices[0]?.message?.content))) {
+        return data.reply || data.choices[0].message.content;
       }
-      if (data && data.error === "TIMEOUT") {
-        return "这边等得有点久，先缓一缓。我稍后再帮你想想，可以先深呼吸或写下此刻的念头。";
+      if (data && data.error) {
+        if (data.error === "TIMEOUT") {
+          return "这边等得有点久，先缓一缓。我稍后再帮你想想，可以先深呼吸或写下此刻的念头。";
+        }
+        console.error("CloudFn错误:", data);
       }
-      console.error("CloudFn返回异常:", data);
       if (USE_LOCAL_FALLBACK_ON_ERROR) {
         return localFallbackReply({ content, story, mode });
       }
