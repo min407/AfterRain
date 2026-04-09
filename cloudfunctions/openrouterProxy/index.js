@@ -92,7 +92,7 @@ exports.main = async (event) => {
           { role: "system", content: systemPrompt },
           { role: "user", content }
         ],
-        max_tokens: 200,
+        max_tokens: 300,
         temperature: 0.7
       }),
       signal: controller.signal
@@ -124,8 +124,13 @@ exports.main = async (event) => {
       return { error: "API_ERROR", detail: data };
     }
 
-    // 处理空回复
-    const reply = data.reply;
+    // 处理回复 - 兼容多种格式
+    let reply = data.reply || data.choices?.[0]?.message?.content;
+    // 如果 content 为空，尝试从 reasoning_content 取
+    if (!reply || reply.trim() === "") {
+      reply = data.choices?.[0]?.message?.reasoning_content;
+    }
+    // 如果还是空，返回错误
     if (!reply || reply.trim() === "") {
       console.error("空回复:", data);
       return { error: "EMPTY_REPLY", detail: data };

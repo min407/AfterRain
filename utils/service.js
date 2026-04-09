@@ -133,8 +133,11 @@ async function chatWithAI(payload) {
           if (data.error === "TIMEOUT" || data.base_resp?.status_msg?.includes("timeout")) {
             return "这边等得有点久，先缓一缓。";
           }
-          if (data.error === "OVERLOADED") {
+          if (data.error === "OVERLOADED" || data.base_resp?.status_msg?.includes("负载")) {
             return "晴天正在休息，稍后再来找她吧~";
+          }
+          if (data.error === "API_ERROR" || data.base_resp?.status_code === 1000) {
+            return "晴天有点累，让我休息一下再找你~";
           }
         }
       }
