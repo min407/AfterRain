@@ -6,6 +6,10 @@ cloud.init({ env: "dev-3gwv4qw4b16fe302" });
 const MINIMAX_ENDPOINT = "https://api.minimax.chat/v1/text/chatcompletion_v2";
 const MODEL_ID = "MiniMax-M2.5";
 const MINIMAX_API_KEY = "fc662a434babb407a1bdcc187fd7d2a54da1a075d6dc2faab21973b4d603525e";
+
+// 尝试不同的认证格式
+const AUTH_HEADER = "Bearer " + MINIMAX_API_KEY;
+console.log("认证头:", AUTH_HEADER.slice(0, 30) + "...");
 const REQUEST_TIMEOUT_MS = 20000;
 
 function buildSystemPrompt(story = {}, mode = "companionship") {
@@ -79,7 +83,7 @@ exports.main = async (event) => {
     const res = await fetch(MINIMAX_ENDPOINT, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${MINIMAX_API_KEY}`,
+        "Authorization": MINIMAX_API_KEY,  // 无 Bearer 前缀
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -96,20 +100,15 @@ exports.main = async (event) => {
     clearTimeout(timer);
 
     const data = await res.json();
-    console.log("MiniMax响应:", JSON.stringify(data));
-    console.log("status:", res.status, "ok:", res.ok);
+    console.log("API响应:", JSON.stringify(data));
 
-    if (!res.ok) {
-      console.error("MiniMax API error", res.status, data);
-      return { error: "REQUEST_FAILED", status: res.status, detail: data };
+    if (data.base_resp?.status_code !== 0) {
+      console.error("API错误:", data.base_resp);
+      return { error: "API_ERROR", detail: data };
     }
 
-    console.log("API返回keys:", Object.keys(data));
-    console.log("data.reply:", data.reply);
-    console.log("data.choices:", data.choices);
-
-    // 查看完整数据结构
-    return { success: true, detail: data };
+    // 正常返回格式
+    return { success: true, reply: data.reply || data.choices?.[0]?.message?.content };
   } catch (err) {
     clearTimeout(timer);
     console.error("MiniMax API error", err.message);
