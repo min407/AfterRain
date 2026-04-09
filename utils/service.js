@@ -105,19 +105,35 @@ async function chatWithAI(payload) {
         data: { mode, story, content },
         timeout: 25000
       });
-      console.log("CloudFn原始返回:", cloudRes);
       const data = cloudRes?.result;
-      console.log("CloudFn result:", data);
+      console.log("CloudFn result:", JSON.stringify(data).slice(0, 300));
 
-      // 兼容多种返回格式
-      if (data && (data.reply || (data.choices && data.choices[0]?.message?.content))) {
-        return data.reply || data.choices[0].message.content;
-      }
-      if (data && data.error) {
-        if (data.error === "TIMEOUT") {
-          return "这边等得有点久，先缓一缓。我稍后再帮你想想，可以先深呼吸或写下此刻的念头。";
+      // 兼容多种成功格式:
+      // { success: true, reply: "..." }
+      // { base_resp: { status_code: 0 }, reply: "..." }
+      // { choices: [{ message: { content: "..." } }] }
+      if (data) {
+        if (data.reply) {
+          // 格式1: { reply: "..." } 或 { success: true, reply: "..." }
+          // 格式2: { base_resp: { status_code: 0 }, reply: "..." }
+          if (data.success !== false && data.base_resp?.status_code === 0) {
+            return data.reply;
+          }
+          if (data.success === true && data.reply) {
+            return data.reply;
+          }
         }
-        console.error("CloudFn错误:", data);
+        // 格式3: OpenAI 格式
+        if (data.choices && data.choices[0]?.message?.content) {
+          return data.choices[0].message.content;
+        }
+        // 错误情况
+        if (data.error || data.base_resp?.status_code !== 0) {
+          console.error("CloudFn错误:", data);
+          if (data.error === "TIMEOUT" || data.base_resp?.status_msg?.includes("timeout")) {
+            return "这边等得有点久，先缓一缓。";
+          }
+        }
       }
       if (USE_LOCAL_FALLBACK_ON_ERROR) {
         return localFallbackReply({ content, story, mode });
