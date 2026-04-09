@@ -61,15 +61,14 @@
   <!-- ===== 备忘录模式 ===== -->
   <view class="memo-mode" wx:if="{{mode !== 'checkin'}}">
     <view class="memo-header">
-      <view class="memo-title">清醒备忘录</view>
-      <view class="memo-sub">动摇的时候来看看</view>
+      <view class="memo-title">清醒时刻</view>
     </view>
 
     <scroll-view class="memo-list" scroll-y show-scrollbar="{{false}}">
       <view class="empty-state" wx:if="{{memos.length === 0}}">
         <view class="empty-icon">📝</view>
         <view class="empty-text">还没有记录</view>
-        <view class="empty-hint">写下不联系 TA 的理由，动摇时来看看</view>
+        <view class="empty-hint">写下不联系 TA 的理由，这是属于你的清醒时刻</view>
       </view>
       <block wx:for="{{memos}}" wx:key="index">
         <view class="memo-item">
