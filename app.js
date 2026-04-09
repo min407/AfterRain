@@ -1,6 +1,17 @@
+const { seedMockIfNeeded } = require("./utils/mock");
+
 App({
   onLaunch() {
     console.log("App launch");
+    if (wx.cloud) {
+      wx.cloud.init({
+        env: "dev-3gwv4qw4b16fe302",
+        traceUser: true
+      });
+    } else {
+      console.error("wx.cloud not available, please use base lib >= 2.2.3");
+    }
+    seedMockIfNeeded();
   },
   globalData: {
     user: null,

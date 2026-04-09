@@ -1,6 +1,10 @@
 // AI 对话服务 - 基于 OpenRouter Claude API
+// 注意：生产环境请将密钥移入云函数或环境变量，避免明文暴露
 const OPENROUTER_API_KEY = "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";
 const OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
+// 兜底开关：仅在请求失败时返回本地离线回复，正常情况下始终走真实模型
+const USE_LOCAL_FALLBACK_ON_ERROR = true;
+const CLOUD_FUNCTION_NAME = "openrouterProxy";
 
 // 将 wx.request Promise 化，避免 await undefined
 const wxRequest = (opts) =>
@@ -11,6 +15,27 @@ const wxRequest = (opts) =>
       fail: reject,
     });
   });
+
+function getEnvVersionSafe() {
+  try {
+    const info = wx.getAccountInfoSync();
+    return info?.miniProgram?.envVersion || "release";
+  } catch (e) {
+    return "release";
+  }
+}
+
+// 本地兜底回复，避免网络失败时出现“抱歉我累了”的空白体验
+function localFallbackReply({ content, story, mode }) {
+  const name = mode === "calm" ? "清醒" : mode === "reflect" ? "复盘" : "陪伴";
+  const detail = story?.hardest_moment || story?.current_thoughts || "你刚刚的分享";
+  const nudge = mode === "calm"
+    ? "先别急着联系，对自己好一点。深呼吸，再去做一件让你踏实的小事。"
+    : mode === "reflect"
+    ? "把让你反复想起的瞬间写下来，分开【事实/感受/担心】三个栏，等会儿我们再一起看。"
+    : "我会在这里，先喝口水，打几个字记录下此刻的情绪。";
+  return `(${name}·离线回复) 我看到了：${detail}。${nudge}`;
+}
 
 /**
  * 构建 System Prompt
@@ -38,32 +63,38 @@ function buildSystemPrompt(story, mode) {
 
   let modeInstruction = "";
   if (mode === "calm") {
-    modeInstruction = "【清醒模式】用户现在想联系TA，你要帮用户保持理性，回想分手的原因和最难熬的时刻，提醒用户不要冲动。";
+    modeInstruction = "【清醒模式】用户想冲动联系TA，你要帮她稳住，提醒分手/矛盾的原因，提供可执行的小步行动(如先散步/写下想说的话不发送)。";
   } else if (mode === "reflect") {
-    modeInstruction = "【复盘模式】用户想分析这段关系，你要用结构化提问帮用户梳理关系模式，不要直接给答案。";
+    modeInstruction = "【复盘模式】用结构化提问帮助梳理关系模式：事实-感受-需求-界限，避免直接给结论，鼓励自我洞察。";
   } else {
-    modeInstruction = "【陪伴模式】用户只是想倾诉，你要温柔倾听，先共情，不要急着给建议。";
+    modeInstruction = "【陪伴模式】主要是共情与情绪容纳，先反馈听到的情绪，再给温柔陪伴，不着急给建议。";
   }
 
-  return `你是"失恋晴天"——用户的清醒好友。你了解她的完整故事：
+  return `你是用户最贴心的好朋友，名字叫"晴天"。你正在和一个刚经历失恋的朋友聊天。
 
-【用户故事档案】
-- 场景：${sceneDesc || "待了解"}
-- 关系时长：${duration || "待了解"}
-- 分手发起方：${initiator || "待了解"}
-- 分手原因：${reason || "待了解"}
-- 最难熬的事：${hardest_moment || "待了解"}
-- 当前主要念头：${current_thoughts || "待了解"}
-- 当前需要：${need || "待了解"}
+【绝对禁止】
+- 绝对不要输出你的思考过程、分析步骤、角色说明
+- 绝对不要说"让我理解一下""我的角色是""我需要"这类话
+- 绝对不要用第三人称描述用户（如"用户说""她表示"）
+- 直接用"你"称呼对方，用"我"称呼自己，像朋友聊天一样
 
-【回应原则】
-1. 永远先认情绪，再说其他
-2. 每次回应必须引用用户故事中的至少1个具体细节
-3. 绝对不说泛化套话："这很正常"、"给自己时间"、"你值得更好的"
-4. ${modeInstruction}
-5. 每次最多问1个问题
-6. 语气：像懂你的朋友，不是心理咨询师，不是机器人
-7. 回复控制在100字以内，简短有力`;
+【你知道的关于TA的故事】
+- 场景：${sceneDesc || "还不太了解"}
+- 在一起多久：${duration || "还不太了解"}
+- 谁提的分手：${initiator || "还不太了解"}
+- 分手原因：${reason || "还不太了解"}
+- 最难熬的事：${hardest_moment || "还不太了解"}
+- 现在脑子里想的：${current_thoughts || "还不太了解"}
+- 现在最需要的：${need || "还不太了解"}
+
+【聊天风格】
+1. 先接住对方的情绪，再聊别的。用对方说过的具体细节来回应。
+2. 像闺蜜/好哥们一样说话，温暖但不矫情，不说"一切都会好的"这种空话。
+3. 可以给一个小建议（比如先深呼吸、写下来但不发），但不要说教。
+4. 每次最多问一个问题，别追问太多。
+5. 简短有力，控制在80字以内。
+6. ${modeInstruction}
+`;
 }
 
 /**
@@ -73,10 +104,38 @@ function buildSystemPrompt(story, mode) {
  * @param {Object} payload.story - 用户故事档案
  * @param {string} payload.content - 用户输入
  */
-export async function chatWithAI(payload) {
+async function chatWithAI(payload) {
   const { mode = "companionship", story = {}, content } = payload;
 
+  const env = getEnvVersionSafe();
   const systemPrompt = buildSystemPrompt(story, mode);
+
+  // 优先走云函数（真机/正式环境推荐），避免域名白名单限制
+  if (wx && wx.cloud) {
+    try {
+      const cloudRes = await wx.cloud.callFunction({
+        name: CLOUD_FUNCTION_NAME,
+        data: { mode, story, content },
+        timeout: 30000
+      });
+      const data = cloudRes?.result;
+      if (data && data.choices && data.choices[0]) {
+        return data.choices[0].message.content;
+      }
+      console.error("CloudFn返回异常:", data);
+      if (data && data.error === "TIMEOUT") {
+        return "这边等得有点久，先缓一缓。我稍后再帮你想想，可以先深呼吸或写下此刻的念头。";
+      }
+      if (USE_LOCAL_FALLBACK_ON_ERROR) {
+        return localFallbackReply({ content, story, mode });
+      }
+    } catch (err) {
+      console.error("调用云函数失败:", err);
+      if (USE_LOCAL_FALLBACK_ON_ERROR) {
+        return localFallbackReply({ content, story, mode });
+      }
+    }
+  }
 
   try {
     const response = await wxRequest({
@@ -89,7 +148,7 @@ export async function chatWithAI(payload) {
         "X-Title": "失恋晴天"
       },
       data: {
-        model: "anthropic/claude-sonnet-4-20250514",
+        model: "minimax/minimax-m2.5",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content }
@@ -100,16 +159,22 @@ export async function chatWithAI(payload) {
       }
     });
 
-    const data = response?.data;
-    if (data && data.choices && data.choices[0]) {
+    const { statusCode, data } = response || {};
+    if (statusCode === 200 && data && data.choices && data.choices[0]) {
       return data.choices[0].message.content;
     }
 
-    console.error("API响应异常:", data);
+    console.error("AI响应异常:", statusCode, data);
+    if (USE_LOCAL_FALLBACK_ON_ERROR) {
+      return localFallbackReply({ content, story, mode });
+    }
     return "抱歉，我现在有点累，让我们稍后再聊吧。";
 
   } catch (error) {
     console.error("AI对话失败:", error);
+    if (USE_LOCAL_FALLBACK_ON_ERROR) {
+      return localFallbackReply({ content, story, mode });
+    }
     return "抱歉，AI暂时不可用，请稍后再试。";
   }
 }
@@ -118,12 +183,11 @@ export async function chatWithAI(payload) {
  * 流式对话（微信小程序不支持真正的流式，需模拟）
  * 为后续优化保留接口
  */
-export async function chatWithAIStream(payload) {
-  // 小程序不支持真正的流式输出，使用普通接口
+async function chatWithAIStream(payload) {
   return chatWithAI(payload);
 }
 
-export default {
+module.exports = {
   chatWithAI,
   chatWithAIStream
 };

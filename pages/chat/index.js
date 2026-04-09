@@ -1,5 +1,13 @@
 // AI对话页 - 3种模式 + 对话界面 + Claude API接入
-import { chatWithAI } from "../../utils/service";
+// 模拟回复函数
+function chatWithAI模拟(content) {
+  const replies = {
+    calm: "先别急着联系TA，深呼吸一下。你想发的消息可以先写下来，别发送。",
+    reflect: "这段关系里让你最在意的是什么时候？可以想一想那时的感受。",
+    companionship: "我在这里听你说。慢慢来，不着急。"
+  };
+  return replies.companionship;
+}
 
 Page({
   data: {
@@ -15,15 +23,15 @@ Page({
     modeDescriptions: {
       calm: {
         text: "清醒模式",
-        welcome: "好的，慢慢说。我在听。"
+        welcome: "我在这里，先陪你稳住情绪。告诉我，此刻最想冲动去做的事是什么？"
       },
       reflect: {
         text: "复盘模式",
-        welcome: "想聊什么都可以，我来帮你梳理。"
+        welcome: "一起梳理：先说一件让你反复想起的事，我帮你分清事实与感受。"
       },
       companionship: {
         text: "陪伴模式",
-        welcome: "我在这里，想说就说吧。"
+        welcome: "我会安静听你说。今天最堵心的点是什么？可以慢慢讲。"
       }
     }
   },
@@ -102,12 +110,7 @@ Page({
     this.setData({ input: "", isLoading: true });
 
     try {
-      const story = wx.getStorageSync("storySummary") || {};
-      const reply = await chatWithAI({
-        mode: this.data.selectedMode,
-        story,
-        content
-      });
+      const reply = chatWithAI模拟(content);
       this.addMessage("ai", reply);
     } catch (error) {
       console.error("AI对话错误:", error);

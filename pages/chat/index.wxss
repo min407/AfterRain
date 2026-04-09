@@ -197,7 +197,8 @@
 
 /* 气泡 */
 .bubble {
-  max-width: 72%;
+  max-width: 70%;
+  box-sizing: border-box;
   padding: 13px 17px;
   font-size: 15px;
   line-height: 1.65;
