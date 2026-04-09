@@ -47,7 +47,7 @@
     </view>
 
     <!-- 开始按钮 -->
-    <button class="start-btn" bindtap="startChat" wx:if="{{selectedMode}}">开始聊天</button>
+    <button class="start-btn" bindtap="startChat" wx:if="{{selectedMode}}">聊一聊</button>
   </view>
 
   <!-- 对话区域 -->
@@ -75,7 +75,7 @@
             <image class="ai-avatar-img" src="/assets/avatar/头像.jpg" mode="aspectFill"></image>
           </view>
           <view class="avatar user-avatar" wx:if="{{item.from === 'user'}}">
-            <text>👤</text>
+            <text>☀️</text>
           </view>
           <view class="bubble bubble-{{item.from}}">{{item.text}}</view>
         </view>

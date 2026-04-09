@@ -107,15 +107,20 @@ exports.main = async (event) => {
     let data;
     try {
       const text = await res.text();
-      console.log("API响应文本:", text.slice(0, 500));
+      console.log("API响应文本:", text.slice(0, 800));
       data = JSON.parse(text);
     } catch (e) {
-      console.error("JSON解析失败:", e, "原始内容:", await res.text());
+      const rawText = await res.text();
+      console.error("JSON解析失败:", e.message, "原始:", rawText.slice(0, 500));
       return { error: "JSON_PARSE_ERROR", detail: e.message };
     }
 
-    if (data.base_resp?.status_code !== 0) {
-      console.error("API错误:", data.base_resp);
+    if (data.base_resp?.status_code !== 0 || data.error) {
+      console.error("API错误:", data.base_resp || data.error);
+      // 服务过载
+      if (data.error?.type === "overloaded_error") {
+        return { error: "OVERLOADED", detail: "当前服务繁忙，请稍后重试" };
+      }
       return { error: "API_ERROR", detail: data };
     }
 

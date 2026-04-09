@@ -115,6 +115,9 @@
   border: none;
   box-shadow: 0 12px 32px rgba(142,197,252,0.4);
   letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .start-btn::after { border: none; }
 .start-btn:active {

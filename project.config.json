@@ -19,7 +19,10 @@
   "cloudfunctionRoot": "cloudfunctions",
   "simulatorPluginLibVersion": {},
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      { "type": "folder", "value": "对标材料" },
+      { "type": "file", "value": "MVP_产品规划.md" }
+    ],
     "include": []
   },
   "appid": "wx468e823d2642e07e",
