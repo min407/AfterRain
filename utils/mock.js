@@ -30,7 +30,7 @@ function buildRecentCheckins(days = 9) {
     const iso = d.toISOString().split("T")[0];
     list.push({
       date: iso,
-      contacted: i % 3 === 0, // 偶尔联系
+      contacted: false, // 9天都没联系
       mood: i % 5,
       star_color: randomStarColor(),
       created_at: d.toISOString()
@@ -72,7 +72,7 @@ function seedMockIfNeeded() {
 
   // 打卡
   setIfEmpty("checkins", buildRecentCheckins());
-  setIfEmpty("startDate", new Date(Date.now() - 8 * 24 * 3600 * 1000).toISOString());
+  setIfEmpty("startDate", new Date(Date.now() - 9 * 24 * 3600 * 1000).toISOString());
 
   // 备忘录
   setIfEmpty("memos", [
