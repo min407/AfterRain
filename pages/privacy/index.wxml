@@ -1,0 +1,113 @@
+<scroll-view class="container" scroll-y="true" enhanced="{{true}}" show-scrollbar="{{false}}">
+  <view class="header">
+    <view class="title">失恋晴天 · 用户隐私协议</view>
+    <view class="meta">更新日期：{{updateDate}}</view>
+    <view class="meta">生效日期：{{updateDate}}</view>
+  </view>
+
+  <view class="intro">
+    欢迎使用"失恋晴天"（以下简称"本小程序"）。本小程序由个人开发者{{developer}}开发并运营（以下简称"我们"）。我们深知个人信息对你的重要性，在你使用本小程序前，请仔细阅读本《隐私协议》，了解我们收集、使用、存储你个人信息的方式，以及你所享有的权利。
+  </view>
+  <view class="intro">
+    若你不同意本协议任何内容，请立即停止使用本小程序。当你勾选"我已阅读并同意"并继续使用本小程序，即视为你已充分阅读并同意本协议全部条款。
+  </view>
+
+  <!-- 1. 我们收集的信息 -->
+  <view class="section">
+    <view class="h2">一、我们收集的信息</view>
+    <view class="p">本小程序遵循"最小必要"原则，仅收集为你提供核心功能所必需的信息：</view>
+
+    <view class="h3">1. 你主动提供的内容</view>
+    <view class="p">· 故事档案：包括你选择的情感场景、关系阶段、最难过的瞬间、当前状态等个人叙述文字。</view>
+    <view class="p">· 星星寄语与备忘内容：你在"星星瓶"及"清醒时刻"中主动输入的文字。</view>
+    <view class="p">· AI 对话内容：你在"晴天树洞"中发送的消息。</view>
+
+    <view class="h3">2. 自动生成的使用记录</view>
+    <view class="p">· 打卡日期：你每次进行打卡的本地日期。</view>
+    <view class="p">· 首次使用日期：用于计算"当前天数"。</view>
+
+    <view class="p strong">我们不会收集以下信息：你的微信昵称、头像、手机号、地理位置、通讯录、相册、设备标识符等任何可直接识别你身份的信息。</view>
+  </view>
+
+  <!-- 2. 我们如何使用这些信息 -->
+  <view class="section">
+    <view class="h2">二、我们如何使用这些信息</view>
+    <view class="p">我们收集上述信息仅用于以下目的：</view>
+    <view class="p">1. 为你提供个性化的情感陪伴内容（如基于你的故事档案为 AI 对话提供上下文）。</view>
+    <view class="p">2. 记录你的打卡进度，展示陪伴天数与连续坚持天数。</view>
+    <view class="p">3. 在"我的足迹"日历中展示你的记录。</view>
+    <view class="p">我们不会将你的信息用于广告投放、商业分析或任何其他未告知的用途。</view>
+  </view>
+
+  <!-- 3. 我们如何存储这些信息 -->
+  <view class="section">
+    <view class="h2">三、我们如何存储这些信息</view>
+    <view class="p strong">你的所有数据仅存储在你本人的手机本地（通过微信小程序本地存储机制），我们不会将上述信息上传至我们自有的服务器或任何云端数据库。</view>
+    <view class="p">这意味着：</view>
+    <view class="p">· 当你清空微信小程序缓存、卸载微信或更换设备时，上述数据将无法恢复。</view>
+    <view class="p">· 我们自身也无法访问、读取或找回你存储于本地的任何数据。</view>
+    <view class="p">例外情况：当你使用"晴天树洞" AI 对话功能时，你的对话消息会被即时传输至第三方大语言模型服务商用于生成回复，详见第四条。</view>
+  </view>
+
+  <!-- 4. 信息的对外提供 -->
+  <view class="section">
+    <view class="h2">四、信息的对外提供</view>
+    <view class="p">为实现 AI 对话功能，当你在"晴天树洞"中发送消息时，我们需要将以下内容传输给<text class="strong">境外第三方大语言模型服务商</text>：</view>
+    <view class="p">· 你当次发送的对话内容</view>
+    <view class="p">· 必要时，会附带你在"故事档案"中填写的简要信息，用于让 AI 更贴合你的情境作答</view>
+    <view class="p strong">重要说明：</view>
+    <view class="p">· 该服务商位于中华人民共和国境外，因此涉及个人信息的跨境传输。</view>
+    <view class="p">· 我们仅在你主动发起对话时才会传输数据，不会在后台传输。</view>
+    <view class="p">· 我们与服务商的对接仅用于即时生成回复，不会用于训练模型。</view>
+    <view class="p">· 除上述情形外，我们不会与任何其他第三方共享、转让、公开披露你的个人信息。</view>
+    <view class="p">如你不希望信息被跨境传输，请不要使用"晴天树洞" AI 对话功能。</view>
+  </view>
+
+  <!-- 5. 你的权利 -->
+  <view class="section">
+    <view class="h2">五、你的权利</view>
+    <view class="p">你对自己的个人信息享有完全控制权，可以随时：</view>
+    <view class="p">1. 查看：在"戒断日历"页面的"我的故事"和"我的足迹"中查看你已录入的所有内容。</view>
+    <view class="p">2. 修改：在"戒断日历"页面点击"重新聊聊"可重新填写故事档案。</view>
+    <view class="p">3. 删除：在"戒断日历"页面的"设置 → 重新开始"可一键清空你在本小程序内的全部数据；你也可以通过微信"我 → 设置 → 通用 → 存储空间 → 小程序缓存"整体清理。</view>
+    <view class="p">删除操作不可撤销，请谨慎操作。</view>
+  </view>
+
+  <!-- 6. 未成年人保护 -->
+  <view class="section">
+    <view class="h2">六、未成年人保护</view>
+    <view class="p">本小程序面向成年用户。若你未满 14 周岁，请在监护人陪同下阅读本协议；未满 18 周岁的用户需在监护人知情并同意的前提下使用本小程序。如你是监护人，发现未成年人未经同意使用本小程序或提供个人信息，请通过第九条的联系方式与我们联系。</view>
+  </view>
+
+  <!-- 7. Cookie 等 -->
+  <view class="section">
+    <view class="h2">七、Cookie 及类似技术</view>
+    <view class="p">本小程序不使用 Cookie，仅使用微信小程序提供的本地存储机制（wx.setStorageSync）保存你的数据，用途见本协议第二条与第三条。</view>
+  </view>
+
+  <!-- 8. 协议的变更 -->
+  <view class="section">
+    <view class="h2">八、协议的变更</view>
+    <view class="p">我们可能会适时对本协议进行修订。当协议内容发生实质性变更时，我们将通过小程序内醒目的通知告知你。请你留意查看。若你继续使用本小程序，即表示你接受更新后的协议。</view>
+  </view>
+
+  <!-- 9. 联系我们 -->
+  <view class="section">
+    <view class="h2">九、联系我们</view>
+    <view class="p">如你对本协议或你的个人信息处理有任何疑问、意见或投诉，欢迎通过以下方式联系我们：</view>
+    <view class="contact-card">
+      <view class="contact-row">
+        <text class="contact-label">开发者</text>
+        <text class="contact-value">{{developer}}</text>
+      </view>
+      <view class="contact-row" bindtap="copyEmail">
+        <text class="contact-label">邮箱</text>
+        <text class="contact-value contact-email">{{contactEmail}}</text>
+        <text class="contact-copy">复制</text>
+      </view>
+    </view>
+    <view class="p">我们会在合理时间内回复你的咨询。</view>
+  </view>
+
+  <view class="footer-tip">感谢你选择"失恋晴天"，愿这里能陪你走过最难的日子。</view>
+</scroll-view>

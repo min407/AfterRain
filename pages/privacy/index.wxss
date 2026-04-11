@@ -1,0 +1,105 @@
+/* 隐私协议页 */
+.container {
+  min-height: 100vh;
+  background: linear-gradient(168deg, #F4F0FF 0%, #EDF5FF 60%, #F0F8FF 100%);
+  padding: 20px 20px 40px;
+  box-sizing: border-box;
+}
+
+.header {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(155, 142, 196, 0.18);
+}
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2D2B55;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+.meta {
+  font-size: 12px;
+  color: #9B93B8;
+  line-height: 1.8;
+}
+
+.intro {
+  font-size: 14px;
+  color: #4A4766;
+  line-height: 1.8;
+  margin-bottom: 12px;
+}
+
+.section {
+  margin-top: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  border-radius: 14px;
+  padding: 16px 16px 12px;
+  box-shadow: 0 2px 12px rgba(155, 142, 196, 0.08);
+}
+.h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2D2B55;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+.h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #564F82;
+  margin-top: 8px;
+  margin-bottom: 6px;
+}
+.p {
+  font-size: 13px;
+  color: #555A78;
+  line-height: 1.85;
+  margin-bottom: 4px;
+}
+.strong {
+  color: #2D2B55;
+  font-weight: 600;
+}
+
+.contact-card {
+  margin: 10px 0;
+  padding: 12px 14px;
+  background: #F7F4FF;
+  border-radius: 10px;
+  border: 1px solid rgba(155, 142, 196, 0.2);
+}
+.contact-row {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+}
+.contact-label {
+  font-size: 13px;
+  color: #9B93B8;
+  width: 56px;
+}
+.contact-value {
+  font-size: 13px;
+  color: #2D2B55;
+  flex: 1;
+}
+.contact-email {
+  color: #6A5FA8;
+}
+.contact-copy {
+  font-size: 12px;
+  color: #7AB8FA;
+  padding: 2px 10px;
+  background: rgba(122, 184, 250, 0.12);
+  border-radius: 10px;
+}
+
+.footer-tip {
+  text-align: center;
+  font-size: 12px;
+  color: #B0ABCC;
+  margin-top: 28px;
+  letter-spacing: 0.5px;
+}

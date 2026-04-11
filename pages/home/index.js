@@ -11,10 +11,31 @@ function randomPair() {
   return COLOR_PAIRS[Math.floor(Math.random() * COLOR_PAIRS.length)];
 }
 
+// 本地日期字符串 YYYY-MM-DD（避免 toISOString 时区坑）
+function formatLocalDate(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+// 解析 YYYY-MM-DD → 本地 Date（零点）
+function parseLocalDate(str) {
+  const [y, m, d] = str.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
+// 两个日期相差的自然日数（按本地零点计算）
+function diffDays(aStr, bStr) {
+  const a = parseLocalDate(aStr);
+  const b = parseLocalDate(bStr);
+  return Math.round((b - a) / 86400000);
+}
+
 Page({
   data: {
-    day: 1,
-    progress: 5,
+    day: 0,
+    progress: 0,
     targetDays: 28,
     streak: 0,
     quote: "今天先照顾好自己，一口气完成一件小事就很棒。",
@@ -137,6 +158,16 @@ Page({
         const memos = wx.getStorageSync("starMemos") || [];
         memos.push({ text: memoText.trim(), color: pair.color, date: new Date().toISOString() });
         wx.setStorageSync("starMemos", memos);
+
+        // 写入打卡（当天首次才 +1），刷新顶部天数
+        const added = this.addCheckinToday("star");
+        this.loadDay();
+        if (added) {
+          wx.showToast({ title: "打卡 +1 天", icon: "success", duration: 1200 });
+        } else {
+          // 当天已打过卡：星星照常进瓶、文字照常存，但不再重复 +1 天
+          wx.showToast({ title: "又一颗星星收进瓶子", icon: "none", duration: 1200 });
+        }
       }, 750);
 
       // ④ 盖子合上
@@ -158,23 +189,32 @@ Page({
   },
 
   loadDay() {
-    const checkins = wx.getStorageSync("checkins") || [];
     const targetDays = this.data.targetDays;
-    const day = Math.min(checkins.length + 1, targetDays);
+    const todayStr = formatLocalDate(new Date());
 
+    // 首次进入：记录起点日期（自然日累积的锚点）
+    let firstDate = wx.getStorageSync("firstOpenDate");
+    if (!firstDate) {
+      firstDate = todayStr;
+      wx.setStorageSync("firstOpenDate", firstDate);
+    }
+
+    // 当前天 = 从首日起经过的自然日数 + 1（首日是第 1 天），封顶 targetDays
+    const dayNum = diffDays(firstDate, todayStr) + 1;
+    const day = Math.min(Math.max(dayNum, 1), targetDays);
+
+    // 连续记录 = 实际连续打卡天数（今日往前数）
+    const checkins = wx.getStorageSync("checkins") || [];
+    const dates = Array.from(new Set(checkins.map(c => c.date)));
     let streak = 0;
-    if (checkins.length > 0) {
-      const sortedDates = checkins.map(c => c.date).sort().reverse();
-      const today = new Date();
-      for (let i = 0; i < sortedDates.length; i++) {
-        const expected = new Date(today);
-        expected.setDate(today.getDate() - i);
-        const expectedStr = expected.toISOString().split("T")[0];
-        if (sortedDates[i] === expectedStr) {
-          streak++;
-        } else {
-          break;
-        }
+    const cursor = new Date();
+    while (true) {
+      const cursorStr = formatLocalDate(cursor);
+      if (dates.indexOf(cursorStr) !== -1) {
+        streak++;
+        cursor.setDate(cursor.getDate() - 1);
+      } else {
+        break;
       }
     }
 
@@ -203,6 +243,29 @@ Page({
 
   onInput(e) {
     this.setData({ memoText: e.detail.value });
+  },
+
+  // 只想打卡：不写心事，直接 +1 天并点亮今日
+  justCheckin() {
+    if (this.data.isAnimating) return;
+    const added = this.addCheckinToday("plain");
+    this.loadDay();
+    wx.showToast({
+      title: added ? "已打卡 +1 天" : "今天已经打过卡啦",
+      icon: added ? "success" : "none"
+    });
+  },
+
+  // 写入今日打卡（按本地日期去重），返回是否新增
+  addCheckinToday(type) {
+    const today = formatLocalDate(new Date());
+    const checkins = wx.getStorageSync("checkins") || [];
+    if (checkins.some(c => c.date === today)) {
+      return false;
+    }
+    checkins.push({ date: today, type: type || "plain", ts: Date.now() });
+    wx.setStorageSync("checkins", checkins);
+    return true;
   },
 
   goCheckin() {

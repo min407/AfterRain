@@ -44,7 +44,18 @@
 
   <!-- 底部按钮 -->
   <view class="bottom-area">
-    <button class="btn-start" bindtap="goHome">
+    <!-- 隐私协议勾选 -->
+    <view class="agree-row" bindtap="toggleAgree">
+      <view class="agree-box {{agreed ? 'agree-box--checked' : ''}}">
+        <text wx:if="{{agreed}}" class="agree-tick">✓</text>
+      </view>
+      <view class="agree-text">
+        我已阅读并同意
+        <text class="agree-link" catchtap="openPrivacy">《用户隐私协议》</text>
+      </view>
+    </view>
+
+    <button class="btn-start {{agreed ? '' : 'btn-start--disabled'}}" bindtap="goHome">
       <text>进 入</text>
     </button>
     <view class="start-hint">想和 AI 深聊时，再讲讲你们的故事</view>

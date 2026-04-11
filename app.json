@@ -5,8 +5,10 @@
     "pages/home/index",
     "pages/chat/index",
     "pages/memo/index",
-    "pages/mine/index"
+    "pages/mine/index",
+    "pages/privacy/index"
   ],
+  "__usePrivacyCheck__": true,
   "window": {
     "navigationBarTitleText": "失恋晴天",
     "navigationBarBackgroundColor": "#F8F5FF",

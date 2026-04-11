@@ -79,10 +79,16 @@
 
   <!-- 折星星按钮 -->
   <view class="bottom-action">
-    <button class="checkin-btn" bindtap="foldStar">
-      <text class="checkin-icon">✨</text>
-      <text class="checkin-text">说给星星听</text>
-    </button>
-    <view class="checkin-hint">每写下一句，瓶子就亮一点</view>
+    <view class="btn-row">
+      <button class="checkin-btn checkin-btn--primary" bindtap="foldStar">
+        <text class="checkin-icon">✨</text>
+        <text class="checkin-text">说给星星听</text>
+      </button>
+      <button class="checkin-btn checkin-btn--ghost" bindtap="justCheckin">
+        <text class="checkin-icon">📍</text>
+        <text class="checkin-text">只想打卡</text>
+      </button>
+    </view>
+    <view class="checkin-hint">写下一句，瓶子就亮一点；不想写也可以直接打卡</view>
   </view>
 </view>

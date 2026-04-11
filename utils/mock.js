@@ -1,6 +1,7 @@
 // 开发环境模拟用户数据，便于真机/预览截图
 // 默认只在非 release 环境写入；若需要强制保留样例数据，可将 FORCE_MOCK 设为 true
-const FORCE_MOCK = true;
+// ⚠️ 上线前务必保持 false，避免向真实用户写入假打卡
+const FORCE_MOCK = false;
 
 function getEnvVersion() {
   try {

@@ -98,6 +98,14 @@
         <text class="setting-arrow">›</text>
       </view>
       <view class="row-divider"></view>
+      <view class="setting-row" bindtap="openPrivacy">
+        <view class="setting-left">
+          <text class="setting-icon">🔒</text>
+          <text class="setting-text">隐私协议</text>
+        </view>
+        <text class="setting-arrow">›</text>
+      </view>
+      <view class="row-divider"></view>
       <view class="setting-row">
         <view class="setting-left">
           <text class="setting-icon">☀️</text>

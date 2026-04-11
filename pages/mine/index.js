@@ -1,4 +1,11 @@
 // 我的页面 - 故事档案 + 打卡日历 + 设置
+function formatLocalDate(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 Page({
   data: {
     days: 0,
@@ -40,7 +47,7 @@ Page({
     // 获取打卡记录
     const checkins = wx.getStorageSync("checkins") || [];
     const checkinDates = checkins.map(c => c.date);
-    const today = new Date().toISOString().split("T")[0];
+    const today = formatLocalDate(new Date());
 
     // 生成日历数据
     const calendarDays = [];
@@ -50,7 +57,7 @@ Page({
     }
     // 填充日期
     for (let d = 1; d <= daysInMonth; d++) {
-      const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+      const dateStr = formatLocalDate(new Date(year, month, d));
       calendarDays.push({
         day: d,
         checkin: checkinDates.includes(dateStr),
@@ -107,7 +114,7 @@ Page({
       calendarDays.push({ day: "", checkin: false });
     }
     for (let d = 1; d <= daysInMonth; d++) {
-      const dateStr = `${yearNow}-${String(monthNow + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+      const dateStr = formatLocalDate(new Date(yearNow, monthNow, d));
       calendarDays.push({
         day: d,
         checkin: checkinDates.includes(dateStr),
@@ -120,6 +127,10 @@ Page({
 
   editStory() {
     wx.navigateTo({ url: "/pages/story/index" });
+  },
+
+  openPrivacy() {
+    wx.navigateTo({ url: "/pages/privacy/index" });
   },
 
   clearData() {
